@@ -1,0 +1,9 @@
+// Rename this file to `next.config.mjs` in your project root.
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
+  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || '',
+  experimental: {},
+};
+
+export default nextConfig;
