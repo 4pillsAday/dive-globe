@@ -76,6 +76,12 @@ body.dg-body { margin: 0; background-size: 200% 200%; animation: dg-gradient-mov
 .dg-btn { display: inline-block; background: linear-gradient(180deg, #ff7d7d, #ff6b6b); color: #ffffff; border-radius: 10px; padding: 9px 14px; font-weight: 700; letter-spacing: 0.2px; box-shadow: 0 6px 18px rgba(255,107,107,0.25); transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease; }
 .dg-btn:hover { transform: translateY(-1px); filter: brightness(1.05); box-shadow: 0 10px 22px rgba(255,107,107,0.35); }
 
+/* Globe pin popup */
+.dg-popup { pointer-events: auto; transform: translate(-50%, -120%); background: rgba(9,18,30,0.92); color: #eaf6ff; border: 1px solid var(--surface-contrast); border-radius: 12px; padding: 10px 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); backdrop-filter: blur(8px); min-width: 200px; max-width: 280px; }
+.dg-popup-title { font-weight: 800; font-size: 14px; margin-bottom: 4px; letter-spacing: 0.2px; }
+.dg-popup-meta { font-size: 12px; color: #b7dcff; margin-bottom: 8px; }
+.dg-popup-btn { padding: 6px 10px; font-size: 12px; border-radius: 8px; }
+
 .dg-detail .dg-hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; align-items: center; }
 .dg-hero-text { padding: 8px 0; }
 .dg-hero-img { border-radius: 12px; border: 1px solid var(--surface-contrast); object-fit: cover; width: 100%; height: auto; box-shadow: 0 12px 30px rgba(0,0,0,0.35); }

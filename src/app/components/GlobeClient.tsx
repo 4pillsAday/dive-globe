@@ -75,6 +75,9 @@ const OCEAN_LABELS: LabelData[] = [
 export default function GlobeClient() {
   const [sites, setSites] = useState<DiveSite[]>(SAMPLE);
   const [hovered, setHovered] = useState<string | null>(null);
+  const [popupSlug, setPopupSlug] = useState<string | null>(null);
+  const hideTimerRef = useRef<number | null>(null);
+  const isPopupHoverRef = useRef<boolean>(false);
   const [difficultyFilter, setDifficultyFilter] = useState<string>('');
   const [continentFilter, setContinentFilter] = useState<string>('');
   const [countryFilter, setCountryFilter] = useState<string>('');
@@ -227,6 +230,59 @@ export default function GlobeClient() {
     ...countryLabels,
   ], [countryLabels]);
 
+  type PopupData = { lat: number; lng: number; element: HTMLElement };
+
+  const popupSite = useMemo(() => {
+    if (!popupSlug) return null;
+    const slugLower = popupSlug.toLowerCase();
+    return sites.find((s) => (s.slug || createSlug(s.name)).toLowerCase() === slugLower) || null;
+  }, [popupSlug, sites]);
+
+  const popup = useMemo<PopupData | null>(() => {
+    if (!popupSite) return null;
+    const el = document.createElement('div');
+    el.className = 'dg-popup';
+    const title = document.createElement('div');
+    title.className = 'dg-popup-title';
+    title.textContent = popupSite.name;
+    const meta = document.createElement('div');
+    meta.className = 'dg-popup-meta';
+    const bits: string[] = [];
+    if (popupSite.country) bits.push(popupSite.country);
+    if (popupSite.difficulty) bits.push(String(popupSite.difficulty));
+    meta.textContent = bits.join(' • ');
+    const action = document.createElement('button');
+    action.type = 'button';
+    action.className = 'dg-btn dg-popup-btn';
+    action.textContent = 'View details';
+    action.addEventListener('click', (e) => {
+      e.preventDefault();
+      const slug = popupSite.slug || createSlug(popupSite.name);
+      router.push(`/dive/${slug}`);
+    });
+    el.addEventListener('mouseenter', () => {
+      isPopupHoverRef.current = true;
+      if (hideTimerRef.current != null) {
+        window.clearTimeout(hideTimerRef.current);
+        hideTimerRef.current = null;
+      }
+    });
+    el.addEventListener('mouseleave', () => {
+      isPopupHoverRef.current = false;
+      if (hideTimerRef.current != null) {
+        window.clearTimeout(hideTimerRef.current);
+      }
+      hideTimerRef.current = window.setTimeout(() => {
+        if (!isPopupHoverRef.current) setPopupSlug(null);
+        hideTimerRef.current = null;
+      }, 150);
+    });
+    el.appendChild(title);
+    el.appendChild(meta);
+    el.appendChild(action);
+    return { lat: popupSite.lat, lng: popupSite.lng, element: el };
+  }, [popupSite, router]);
+
   function centroidForCountry(countryLower: string): { lat: number; lng: number } | null {
     const matches = sites.filter((s) => (s.country || '').toLowerCase() === countryLower);
     if (!matches.length) return null;
@@ -342,7 +398,27 @@ export default function GlobeClient() {
       pointColor={(p) => (p as PointData).color}
       pointAltitude={(p) => (p as PointData).slug === hovered ? (p as PointData).altitude * 1.8 : (p as PointData).altitude}
       pointRadius={(p) => (p as PointData).slug === hovered ? (p as PointData).radius * 1.8 : (p as PointData).radius}
-      onPointHover={(p) => setHovered((p as PointData | null)?.slug ?? null)}
+      onPointHover={(p) => {
+        const slug = (p as PointData | null)?.slug ?? null;
+        setHovered(slug);
+        if (slug) {
+          if (hideTimerRef.current != null) {
+            window.clearTimeout(hideTimerRef.current);
+            hideTimerRef.current = null;
+          }
+          setPopupSlug(slug);
+        } else {
+          if (!isPopupHoverRef.current) {
+            if (hideTimerRef.current != null) {
+              window.clearTimeout(hideTimerRef.current);
+            }
+            hideTimerRef.current = window.setTimeout(() => {
+              if (!isPopupHoverRef.current) setPopupSlug(null);
+              hideTimerRef.current = null;
+            }, 200);
+          }
+        }
+      }}
       onPointClick={(p) => {
         const slug = (p as PointData).slug;
         if (slug) router.push(`/dive/${slug}`);
@@ -355,6 +431,11 @@ export default function GlobeClient() {
       labelLat={(d) => (d as LabelData).lat}
       labelLng={(d) => (d as LabelData).lng}
       labelDotRadius={0}
+      htmlElementsData={popup ? [popup] : []}
+      htmlLat={(d) => (d as PopupData).lat}
+      htmlLng={(d) => (d as PopupData).lng}
+      htmlAltitude={0.06}
+      htmlElement={(d) => (d as PopupData).element}
     />
     </>
   );
