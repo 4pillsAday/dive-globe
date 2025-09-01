@@ -18,6 +18,8 @@ const eslintConfig = [
       "out/**",
       "build/**",
       "next-env.d.ts",
+      // Ignore generated Webflow DevLink files (contain many any types and JS warnings)
+      "src/devlink/**",
     ],
   },
 ];
