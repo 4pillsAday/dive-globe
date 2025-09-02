@@ -1,7 +1,14 @@
+.navbar {
+  margin-top: 15px;
+}
+
 .navbar-component {
   display: flex;
   min-height: 80px;
+  margin-top: 5px;
+  margin-bottom: 0px;
   padding-right: 2rem;
+  padding-bottom: 0px;
   padding-left: 2rem;
   align-items: center;
 

@@ -11,11 +11,11 @@ const _interactionsData = JSON.parse(
 
 export function Navbar({
   as: _Component = _Builtin.Section,
-  navbarLinkFeatures = "Features",
-  navbarLinkProducts = "Products",
-  navbarLinkResources = "Resources",
+  navbarLinkHome = "Home",
+  navbarLinkDiveSites = "Dive Sites",
+  navbarLinkAbout = "About",
   navbarLinkContact = "Contact",
-  buttonTextGetStarted = "Get started",
+  buttonTextDiveIn = "Dive In",
   localeDropdownSlot,
 }) {
   _interactions.useInteractions(_interactionsData, _styles);
@@ -54,12 +54,10 @@ export function Navbar({
           >
             <_Builtin.Image
               loading="lazy"
-              width="auto"
+              width="287"
               height="auto"
-              role="img"
-              data-caption="Astral fund logo"
               alt=""
-              src="https://cdn.prod.website-files.com/68b4780ae068710d86aee4bb/68b4780be068710d86aee56c_AstralFund%20Logo.svg"
+              src="https://cdn.prod.website-files.com/68b4780ae068710d86aee4bb/68b685925638ac072084fd2b_Dive_Globe_Logo_-_Text_Right-removebg-preview.png"
             />
           </_Builtin.NavbarBrand>
           <_Builtin.NavbarMenu
@@ -74,34 +72,27 @@ export function Navbar({
               <_Builtin.NavbarLink
                 className={_utils.cx(_styles, "navbar-link")}
                 options={{
-                  href: "#",
+                  href: "/app",
                 }}
               >
-                {navbarLinkFeatures}
+                {navbarLinkHome}
               </_Builtin.NavbarLink>
               <_Builtin.NavbarLink
                 className={_utils.cx(_styles, "navbar-link")}
                 options={{
-                  href: "/investment-strategies",
+                  href: "/app/dive",
+                  preload: "none",
                 }}
               >
-                {navbarLinkProducts}
+                {navbarLinkDiveSites}
               </_Builtin.NavbarLink>
               <_Builtin.NavbarLink
                 className={_utils.cx(_styles, "navbar-link")}
                 options={{
-                  href: "#",
+                  href: "/app/about",
                 }}
               >
-                {navbarLinkResources}
-              </_Builtin.NavbarLink>
-              <_Builtin.NavbarLink
-                className={_utils.cx(_styles, "navbar-link")}
-                options={{
-                  href: "/contact-us",
-                }}
-              >
-                {navbarLinkContact}
+                {navbarLinkAbout}
               </_Builtin.NavbarLink>
             </_Builtin.Block>
             <_Builtin.Block
@@ -131,12 +122,10 @@ export function Navbar({
                   button={false}
                   block="inline"
                   options={{
-                    href: "#",
+                    href: "/app/dive",
                   }}
                 >
-                  <_Builtin.Block tag="div">
-                    {buttonTextGetStarted}
-                  </_Builtin.Block>
+                  <_Builtin.Block tag="div">{buttonTextDiveIn}</_Builtin.Block>
                 </_Builtin.Link>
               </_Builtin.Block>
             </_Builtin.Block>

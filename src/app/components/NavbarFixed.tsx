@@ -63,11 +63,11 @@ export default function NavbarFixed() {
   return (
     <div ref={ref}>
       <Navbar
-        navbarLinkFeatures="Home"
-        navbarLinkProducts="Dive Sites"
-        navbarLinkResources="About"
+        navbarLinkHome="Home"
+        navbarLinkDiveSites="Dive Sites"
+        navbarLinkAbout="About"
         navbarLinkContact=""
-        buttonTextGetStarted="Explore"
+        buttonTextDiveIn="Explore"
       />
     </div>
   );
