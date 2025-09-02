@@ -58,12 +58,17 @@ export default async function DiveIndexPage({ searchParams }: { searchParams?: P
   countries.sort((a, b) => a.localeCompare(b));
 
   return (
-    <main className="dg-container">
-      <h1 className="dg-title">Dive Sites</h1>
-      <DiveFilterBar
-        sites={sites}
-        initial={{ difficulty, ocean, continent, country, diveType: sp.divetype?.toLowerCase() }}
-      />
+    <>
+      <div className="dg-overlay dg-overlay--dive">
+        <div className="dg-filter-row" style={{ pointerEvents: 'auto' }}>
+          <DiveFilterBar
+            sites={sites}
+            initial={{ difficulty, ocean, continent, country, diveType: sp.divetype?.toLowerCase() }}
+          />
+        </div>
+      </div>
+      <main className="dg-container" style={{ marginTop: 'calc(var(--navbar-height) + 76px)' }}>
+        <h1 className="dg-title">Dive Sites</h1>
       <ul className="dg-grid">
         {ordered.length === 0 ? (
           <li className="dg-card" style={{gridColumn: '1 / -1'}}>
@@ -94,6 +99,7 @@ export default async function DiveIndexPage({ searchParams }: { searchParams?: P
         ))}
       </ul>
     </main>
+    </>
   );
 }
 

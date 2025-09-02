@@ -11,6 +11,9 @@
   --surface: rgba(10, 26, 47, 0.66);
   --surface-contrast: rgba(255,255,255,0.12);
   --accent: #7efaff;
+  --navbar-height: 80px; /* used to offset fixed filter bar under Navbar */
+  --filter-width: 160px;
+  --filter-width-mobile: 148px;
 }
 
 @theme inline {
@@ -59,8 +62,10 @@ body.dg-body { margin: 0; background-size: 200% 200%; animation: dg-gradient-mov
 .dg-accent { color: var(--accent); }
 
 .dg-filters { display: flex; gap: 16px; margin: 12px 0 20px; align-items: end; }
-.dg-filters label { display: block; font-size: 12px; color: #9ab6d1; margin-bottom: 6px; }
-.dg-filters select { background: #0a1a2f; color: #e6f1ff; border: 1px solid #17304f; border-radius: 10px; padding: 10px 12px; outline: none; box-shadow: 0 0 0 0 rgba(126,250,255,0.2); transition: box-shadow 150ms ease, border-color 150ms ease; }
+.dg-filters label { display: block; font-size: 11px; color: #9ab6d1; margin-bottom: 2px; }
+.dg-filters select { background: #0a1a2f; color: #e6f1ff; border: 1px solid #17304f; border-radius: 10px; padding: 5px 10px; outline: none; box-shadow: 0 0 0 0 rgba(126,250,255,0.2); transition: box-shadow 150ms ease, border-color 150ms ease; }
+/* Ensure equal widths when using form-based filter (Dive Sites) */
+.dg-filters > div { width: var(--filter-width); min-width: var(--filter-width); flex: 0 0 var(--filter-width); }
 .dg-filters select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(126,250,255,0.15); }
 
 .dg-grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
@@ -99,17 +104,26 @@ body.dg-body { margin: 0; background-size: 200% 200%; animation: dg-gradient-mov
 .dg-actions .dg-btn { flex: 0 0 auto; }
 
 /* Home overlay filters */
-.dg-overlay { position: fixed; left: 0; right: 0; top: 64px; z-index: 30; display: flex; justify-content: center; pointer-events: none; padding: 0 8px; }
-.dg-filter-row { pointer-events: all; display: flex; flex-wrap: wrap; gap: 8px; background: var(--surface); backdrop-filter: blur(8px); border: 1px solid var(--surface-contrast); border-radius: 12px; padding: 8px; max-width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
-.dg-filter-row > div { min-width: 140px; }
-.dg-filter-row select { width: 100%; background: #0a1a2f; color: #eaf6ff; border: 1px solid #17304f; border-radius: 8px; padding: 8px 10px; }
+.dg-overlay { position: fixed; left: 0; right: 0; top: calc(var(--navbar-height) + 6px); z-index: 2000; display: flex; justify-content: center; pointer-events: none; padding: 0 8px; }
+/* Reuse the exact same rules as .dg-overlay; only the vertical offset differs on /app/dive */
+.dg-overlay--dive { top: calc(var(--navbar-height) + 6px); }
+.dg-filter-row { pointer-events: all; display: flex; flex-wrap: wrap; gap: 6px; background: var(--surface); backdrop-filter: blur(8px); border: 1px solid var(--surface-contrast); border-radius: 12px; padding: 2px 6px; max-width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+/* Flatten Dive page form wrapper so children align like the Home overlay */
+.dg-filter-row .dg-filters { display: contents; margin: 0; gap: 0; }
+/* Ensure labels in overlay filter rows match home overlay style */
+.dg-filter-row label { color: #b7dcff; font-size: 12px; display: block; }
+/* Remove extra vertical margin when filters are inside the overlay frame */
+.dg-overlay .dg-filters { margin: 0; }
+.dg-filter-row > div { width: var(--filter-width); min-width: var(--filter-width); flex: 0 0 var(--filter-width); }
+.dg-filter-row select { width: 100%; background: #0a1a2f; color: #eaf6ff; border: 1px solid #17304f; border-radius: 8px; padding: 6px 10px; pointer-events: auto; }
 
 @media (max-width: 640px) {
   .dg-home { height: auto; min-height: calc(100vh - 120px); }
-  .dg-overlay { top: 56px; }
-  .dg-filter-row { gap: 6px; padding: 6px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .dg-filter-row > div { min-width: 140px; flex: 0 0 auto; }
-  .dg-filter-row select { width: auto; }
+  :root { --navbar-height: 112px; }
+  .dg-filter-row { gap: 4px; padding: 4px 5px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .dg-filter-row > div { width: var(--filter-width-mobile); min-width: var(--filter-width-mobile); flex: 0 0 var(--filter-width-mobile); }
+  .dg-filter-row select { width: 100%; }
+  .dg-filters > div { width: var(--filter-width-mobile); min-width: var(--filter-width-mobile); flex: 0 0 var(--filter-width-mobile); }
   .dg-filters { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; gap: 8px; padding-bottom: 4px; }
   .dg-filters > div { min-width: 140px; flex: 0 0 auto; }
   .dg-filters select { width: auto; }

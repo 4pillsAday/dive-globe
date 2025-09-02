@@ -29,11 +29,12 @@ export function Footer({ as: _Component = _Builtin.Section }) {
               }}
             >
               <_Builtin.Image
+                className={_utils.cx(_styles, "image-4")}
                 loading="lazy"
-                width="auto"
+                width="250"
                 height="auto"
                 alt=""
-                src="https://cdn.prod.website-files.com/68b4780ae068710d86aee4bb/68b4780be068710d86aee56c_AstralFund%20Logo.svg"
+                src="https://cdn.prod.website-files.com/68b4780ae068710d86aee4bb/68b685925638ac072084fd2b_Dive_Globe_Logo_-_Text_Right-removebg-preview.png"
               />
             </_Builtin.NavbarBrand>
             <_Builtin.Block
@@ -109,73 +110,6 @@ export function Footer({ as: _Component = _Builtin.Section }) {
             className={_utils.cx(_styles, "footer-menu-wrapper")}
             tag="div"
           >
-            <_Builtin.Block
-              className={_utils.cx(_styles, "footer-link-list")}
-              tag="div"
-            >
-              <_Builtin.Block
-                className={_utils.cx(_styles, "footer-link-list-heading")}
-                tag="div"
-              >
-                {"Banking"}
-              </_Builtin.Block>
-              <_Builtin.Link
-                className={_utils.cx(_styles, "footer-link")}
-                button={false}
-                block="inline"
-                options={{
-                  href: "#",
-                }}
-              >
-                <_Builtin.Block tag="div">{"Overview"}</_Builtin.Block>
-              </_Builtin.Link>
-              <_Builtin.Link
-                className={_utils.cx(_styles, "footer-link")}
-                button={false}
-                block="inline"
-                options={{
-                  href: "#",
-                }}
-              >
-                <_Builtin.Block tag="div">{"Features"}</_Builtin.Block>
-              </_Builtin.Link>
-              <_Builtin.Link
-                className={_utils.cx(_styles, "footer-link")}
-                button={false}
-                block="inline"
-                options={{
-                  href: "#",
-                }}
-              >
-                <_Builtin.Block tag="div">{"Solutions"}</_Builtin.Block>
-                <_Builtin.Block
-                  className={_utils.cx(_styles, "badge")}
-                  tag="div"
-                >
-                  <_Builtin.Block tag="div">{"New"}</_Builtin.Block>
-                </_Builtin.Block>
-              </_Builtin.Link>
-              <_Builtin.Link
-                className={_utils.cx(_styles, "footer-link")}
-                button={false}
-                block="inline"
-                options={{
-                  href: "#",
-                }}
-              >
-                <_Builtin.Block tag="div">{"Pricing"}</_Builtin.Block>
-              </_Builtin.Link>
-              <_Builtin.Link
-                className={_utils.cx(_styles, "footer-link")}
-                button={false}
-                block="inline"
-                options={{
-                  href: "#",
-                }}
-              >
-                <_Builtin.Block tag="div">{"Releases"}</_Builtin.Block>
-              </_Builtin.Link>
-            </_Builtin.Block>
             <_Builtin.Block
               className={_utils.cx(_styles, "footer-link-list")}
               tag="div"
@@ -310,7 +244,7 @@ export function Footer({ as: _Component = _Builtin.Section }) {
             className={_utils.cx(_styles, "text-small", "text-color-light")}
             tag="div"
           >
-            {"© 2023 AstralFundFinancial. All rights reserved."}
+            {"© 2025 Dive Globe. Built For Divers. Stay Curious."}
           </_Builtin.Block>
           <_Builtin.Grid
             className={_utils.cx(_styles, "footer-legal-list")}

@@ -72,7 +72,8 @@ export function Navbar({
               <_Builtin.NavbarLink
                 className={_utils.cx(_styles, "navbar-link")}
                 options={{
-                  href: "/app",
+                  href: "#",
+                  preload: "none",
                 }}
               >
                 {navbarLinkHome}
@@ -122,7 +123,7 @@ export function Navbar({
                   button={false}
                   block="inline"
                   options={{
-                    href: "/app/dive",
+                    href: "/app",
                   }}
                 >
                   <_Builtin.Block tag="div">{buttonTextDiveIn}</_Builtin.Block>

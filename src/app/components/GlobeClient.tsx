@@ -5,18 +5,9 @@ import dynamic from 'next/dynamic';
 import type { GlobeMethods } from 'react-globe.gl';
 import { useRouter } from 'next/navigation';
 import { createSlug } from '@/lib/webflow';
+import type { DiveSiteDetail } from '@/lib/webflow';
 
-type DiveSite = {
-  id: string;
-  slug?: string;
-  name: string;
-  lat: number;
-  lng: number;
-  country?: string;
-  depth?: number | null;
-  difficulty?: 'Beginner' | 'Intermediate' | 'Advanced' | string;
-  diveTypes?: string[];
-};
+// Using DiveSiteDetail shape for consistency with /dive page
 
 type PointData = {
   lat: number;
@@ -39,7 +30,7 @@ type LabelData = {
 
 const Globe = dynamic(() => import('react-globe.gl'), { ssr: false });
 
-const SAMPLE: DiveSite[] = [
+const SAMPLE: DiveSiteDetail[] = [
   { id: 'raja-ampat', slug: 'raja-ampat', name: 'Raja Ampat', lat: -0.2346, lng: 130.5079, country: 'Indonesia', difficulty: 'Intermediate' },
   { id: 'great-blue-hole', slug: 'great-blue-hole', name: 'Great Blue Hole', lat: 17.3156, lng: -87.5346, country: 'Belize', difficulty: 'Advanced' },
   { id: 'great-barrier-reef', slug: 'great-barrier-reef', name: 'Great Barrier Reef', lat: -18.2871, lng: 147.6992, country: 'Australia', difficulty: 'Beginner' },
@@ -73,18 +64,19 @@ const OCEAN_LABELS: LabelData[] = [
 ];
 
 export default function GlobeClient() {
-  const [sites, setSites] = useState<DiveSite[]>(SAMPLE);
+  const [sites, setSites] = useState<DiveSiteDetail[]>(SAMPLE);
   const [hovered, setHovered] = useState<string | null>(null);
   const [popupSlug, setPopupSlug] = useState<string | null>(null);
   const hideTimerRef = useRef<number | null>(null);
   const isPopupHoverRef = useRef<boolean>(false);
+  const router = useRouter();
+  const globeRef = useRef<GlobeMethods | undefined>(undefined);
+  const [globeHeight, setGlobeHeight] = useState<number>(600);
   const [difficultyFilter, setDifficultyFilter] = useState<string>('');
   const [continentFilter, setContinentFilter] = useState<string>('');
   const [countryFilter, setCountryFilter] = useState<string>('');
   const [oceanFilter, setOceanFilter] = useState<string>('');
   const [diveTypeFilter, setDiveTypeFilter] = useState<string>('');
-  const router = useRouter();
-  const globeRef = useRef<GlobeMethods | undefined>(undefined);
 
   useEffect(() => {
     const envBase = (process.env.NEXT_PUBLIC_BASE_PATH || '').replace(/\/$/, '');
@@ -112,6 +104,31 @@ export default function GlobeClient() {
       }
       // keep SAMPLE if all attempts fail
     })();
+  }, []);
+
+  // Compute globe height to leave space for header/filters/footer
+  useEffect(() => {
+    function computeGlobeHeight() {
+      const vh = typeof window !== 'undefined' ? window.innerHeight : 600;
+      let nav = 0;
+      if (typeof window !== 'undefined') {
+        try {
+          const v = getComputedStyle(document.documentElement)
+            .getPropertyValue('--navbar-height')
+            .trim();
+          const parsed = parseInt(v.replace('px', ''));
+          if (Number.isFinite(parsed)) nav = parsed;
+        } catch {}
+      }
+      const overlayAndGap = 120; // reduced extra space to give globe more room
+      const h = Math.max(460, vh - (nav + overlayAndGap));
+      setGlobeHeight(h);
+    }
+    computeGlobeHeight();
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', computeGlobeHeight);
+      return () => window.removeEventListener('resize', computeGlobeHeight);
+    }
   }, []);
 
   // Center globe on user's approximate location at start (best-effort)
@@ -157,7 +174,7 @@ export default function GlobeClient() {
   }
 
   // Compute available option sets based on other selected filters
-  function sitePassesFilters(s: DiveSite, skip: 'country' | 'continent' | 'ocean' | 'difficulty' | 'divetype' | null): boolean {
+  function sitePassesFilters(s: DiveSiteDetail, skip: 'country' | 'continent' | 'ocean' | 'difficulty' | 'divetype' | null): boolean {
     const d = String(s.difficulty || '').toLowerCase();
     const passDiff = skip === 'difficulty' ? true : (difficultyFilter ? d.startsWith(difficultyFilter) : true);
     const passCountry = skip === 'country' ? true : (countryFilter ? (s.country || '').toLowerCase() === countryFilter : true);
@@ -332,7 +349,7 @@ export default function GlobeClient() {
   return (
     <>
       <div className="dg-overlay">
-        <div className="dg-filter-row">
+        <div className="dg-filter-row" style={{ pointerEvents: 'auto' }}>
           <div>
             <label htmlFor="diff" className="dg-spec-label">Difficulty</label>
             <select id="diff" value={difficultyFilter} onChange={(e) => setDifficultyFilter(e.target.value)}>
@@ -386,7 +403,7 @@ export default function GlobeClient() {
       <Globe
       ref={globeRef}
       width={typeof window !== 'undefined' ? window.innerWidth : 800}
-      height={typeof window !== 'undefined' ? window.innerHeight : 600}
+      height={globeHeight}
       backgroundColor="rgba(0,0,0,0)"
       globeImageUrl="https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
       bumpImageUrl="https://unpkg.com/three-globe/example/img/earth-topology.png"

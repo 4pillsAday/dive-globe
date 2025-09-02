@@ -98,7 +98,7 @@
 }
 
 .navbar-link:global(.w--current) {
-  color: hsla(0, 0.00%, 0.00%, 1.00);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 @media screen and (max-width: 991px) {
