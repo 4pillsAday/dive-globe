@@ -72,7 +72,7 @@ export default function GoogleSiteMap({ lat, lng, name, fallbackCenter }: Props)
         if (!results) return 0;
         let count = 0;
         results.forEach((place) => {
-          if (!place.geometry || !place.geometry.location) return;
+          if (!place.geometry || !place.geometry.location || place.business_status !== 'OPERATIONAL') return;
           const marker = new google.maps.Marker({
             map,
             position: place.geometry.location,
@@ -80,10 +80,25 @@ export default function GoogleSiteMap({ lat, lng, name, fallbackCenter }: Props)
           });
           marker.addListener('click', () => {
             const url = `https://www.google.com/maps/place/?q=place_id:${place.place_id}`;
+            const rating = place.rating;
+            const totalRatings = place.user_ratings_total;
+            let ratingHtml = '';
+            if (rating && totalRatings) {
+              ratingHtml = `
+                <div style="display: flex; align-items: center; margin-top: 4px; color: #555; font-size: 14px;">
+                  <span style="font-weight: bold; margin-right: 4px;">${rating.toFixed(1)}</span>
+                  <span style="color:#fbbc04; margin-right: 4px;">${'★'.repeat(Math.round(rating))}${'☆'.repeat(5 - Math.round(rating))}</span>
+                  <span>(${totalRatings})</span>
+                </div>
+              `;
+            }
             const content = `
-              <div style="min-width:200px">
-                <div style="font-weight:600;margin-bottom:4px;">${place.name ?? 'Dive shop'}</div>
-                <a href="${url}" target="_blank" rel="noopener noreferrer">View on Google Maps</a>
+              <div style="font-family: Arial, sans-serif; color: #222;">
+                <div style="font-weight: bold; font-size: 16px; margin-bottom: 2px;">${place.name ?? 'Dive shop'}</div>
+                ${ratingHtml}
+                <div style="margin-top: 8px;">
+                  <a href="${url}" target="_blank" rel="noopener noreferrer" style="color: #1a73e8; text-decoration: none; font-size: 14px;">View on Google Maps</a>
+                </div>
               </div>
             `;
             info?.setContent(content);
