@@ -2,6 +2,7 @@ import { joinBasePath, type DiveSiteDetail, FALLBACK_SITES } from '@/lib/webflow
 import Link from 'next/link';
 import { headers } from 'next/headers';
 import DiveFilterBar from '@/app/components/DiveFilterBar';
+import { Suspense } from 'react';
 
 async function fetchSites(): Promise<DiveSiteDetail[]> {
   try {
@@ -58,48 +59,57 @@ export default async function DiveIndexPage({ searchParams }: { searchParams?: P
   countries.sort((a, b) => a.localeCompare(b));
 
   return (
-    <>
+    <main className="dg-container">
+      <h1 className="dg-title">Dive Sites</h1>
       <div className="dg-overlay dg-overlay--dive">
-        <div className="dg-filter-row" style={{ pointerEvents: 'auto' }}>
-          <DiveFilterBar
-            sites={sites}
-            initial={{ difficulty, ocean, continent, country, diveType: sp.divetype?.toLowerCase() }}
-          />
+        <div className="dg-filter-row">
+          <Suspense fallback={<div>Loading filters...</div>}>
+            <DiveFilterBar
+              sites={sites}
+              initial={{ difficulty, ocean, continent, country, diveType: sp.divetype?.toLowerCase() }}
+            />
+          </Suspense>
         </div>
       </div>
-      <main className="dg-container" style={{ marginTop: 'calc(var(--navbar-height) + 76px)' }}>
-        <h1 className="dg-title">Dive Sites</h1>
-      <ul className="dg-grid">
-        {ordered.length === 0 ? (
-          <li className="dg-card" style={{gridColumn: '1 / -1'}}>
-            <div className="dg-card-body">
-              <div className="dg-card-header"><h2>No results</h2></div>
-              <p className="dg-desc">Try clearing filters or selecting a different country/difficulty.</p>
-            </div>
-          </li>
-        ) : null}
-        {ordered.map((s) => (
-          <li key={s.id} className="dg-card">
-            <div className="dg-card-body">
-              <div className="dg-card-header">
-                <h2>{s.name}</h2>
-                {s.country ? <span className="dg-chip">{s.country}</span> : null}
-              </div>
-              {s.description ? <p className="dg-desc">{s.description}</p> : <p className="dg-desc" aria-hidden />}
-              <div className="dg-meta">
-                {s.difficulty ? <span>Difficulty: {s.difficulty}</span> : null}
-                {s.maxDepth != null ? <span>Max: {s.maxDepth} m</span> : null}
-                {s.avgDepth != null ? <span>Avg: {s.avgDepth} m</span> : null}
-              </div>
-            </div>
-            <div className="dg-card-actions">
-              <Link className="dg-btn" href={`/dive/${s.slug}`}>View details</Link>
-            </div>
-          </li>
-        ))}
-      </ul>
+
+      <div style={{ marginTop: '0px' }}>
+        <Suspense fallback={<div className="dg-grid-loading">Loading dive sites...</div>}>
+          {filtered.length > 0 ? (
+            <ul className="dg-grid">
+              {ordered.length === 0 ? (
+                <li className="dg-card" style={{gridColumn: '1 / -1'}}>
+                  <div className="dg-card-body">
+                    <div className="dg-card-header"><h2>No results</h2></div>
+                    <p className="dg-desc">Try clearing filters or selecting a different country/difficulty.</p>
+                  </div>
+                </li>
+              ) : null}
+              {ordered.map((s) => (
+                <li key={s.id} className="dg-card">
+                  <div className="dg-card-body">
+                    <div className="dg-card-header">
+                      <h2>{s.name}</h2>
+                      {s.country ? <span className="dg-chip">{s.country}</span> : null}
+                    </div>
+                    {s.description ? <p className="dg-desc">{s.description}</p> : <p className="dg-desc" aria-hidden />}
+                    <div className="dg-meta">
+                      {s.difficulty ? <span>Difficulty: {s.difficulty}</span> : null}
+                      {s.maxDepth != null ? <span>Max: {s.maxDepth} m</span> : null}
+                      {s.avgDepth != null ? <span>Avg: {s.avgDepth} m</span> : null}
+                    </div>
+                  </div>
+                  <div className="dg-card-actions">
+                    <Link className="dg-btn" href={`/dive/${s.slug}`}>View details</Link>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="dg-grid-loading">No dive sites found.</div>
+          )}
+        </Suspense>
+      </div>
     </main>
-    </>
   );
 }
 

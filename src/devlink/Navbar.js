@@ -53,11 +53,12 @@ export function Navbar({
             }}
           >
             <_Builtin.Image
+              className={_utils.cx(_styles, "image-5")}
               loading="lazy"
-              width="287"
+              width="213"
               height="auto"
               alt=""
-              src="https://cdn.prod.website-files.com/68b4780ae068710d86aee4bb/68b685925638ac072084fd2b_Dive_Globe_Logo_-_Text_Right-removebg-preview.png"
+              src="https://cdn.prod.website-files.com/68b4780ae068710d86aee4bb/68b8ae0fb69b8f58c5560501_DiveGlobe%20NoBG.png"
             />
           </_Builtin.NavbarBrand>
           <_Builtin.NavbarMenu

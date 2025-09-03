@@ -2,6 +2,13 @@
   margin-top: 15px;
 }
 
+@media screen and (max-width: 479px) {
+  .navbar {
+    margin-right: 0px;
+    padding-right: 0px;
+  }
+}
+
 .navbar-component {
   display: flex;
   min-height: 80px;
@@ -32,6 +39,19 @@
   margin-left: auto;
   justify-content: space-between;
   align-items: center;
+}
+
+@media screen and (max-width: 767px) {
+  .image-5 {
+    display: inline-block;
+    margin-left: 84px;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .image-5 {
+    margin-left: 8px;
+  }
 }
 
 .navbar-menu {
