@@ -98,20 +98,14 @@ export default function GoogleSiteMap({ lat, lng, name, fallbackCenter }: Props)
         service.nearbySearch(
           {
             location: loc,
-            rankBy: google.maps.places.RankBy.DISTANCE,
-            keyword: 'scuba diving dive shop dive center dive centre',
+            radius: 50000, // 50km radius
+            keyword: 'dive shop',
           },
           (results, status, pagination) => {
             if (status !== google.maps.places.PlacesServiceStatus.OK) {
               return;
             }
-            const added = createMarkers(results);
-            if (added === 0 && fallbackCenter) {
-              const fb = new google.maps.LatLng(fallbackCenter.lat, fallbackCenter.lng);
-              map?.setCenter(fb);
-              doSearch(fb);
-              return;
-            }
+            createMarkers(results);
             if (pagination && pagination.hasNextPage) {
               // Load a second page for more results
               pagination.nextPage();
