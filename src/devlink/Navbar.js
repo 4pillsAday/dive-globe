@@ -72,8 +72,7 @@ export function Navbar({
               <_Builtin.NavbarLink
                 className={_utils.cx(_styles, "navbar-link")}
                 options={{
-                  href: "#",
-                  preload: "none",
+                  href: "https://dive-globe.webflow.io",
                 }}
               >
                 {navbarLinkHome}
