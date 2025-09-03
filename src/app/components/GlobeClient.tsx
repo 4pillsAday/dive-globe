@@ -351,6 +351,15 @@ export default function GlobeClient() {
       <div className="dg-overlay">
         <div className="dg-filter-row" style={{ pointerEvents: 'auto' }}>
           <div>
+            <label htmlFor="dtype" className="dg-spec-label">Dive Type</label>
+            <select id="dtype" value={diveTypeFilter} onChange={(e) => setDiveTypeFilter(e.target.value)}>
+              <option value="">All</option>
+              {Array.from(new Set(sites.flatMap((s)=> (s.diveTypes || []) as string[]))).sort((a,b)=>a.localeCompare(b)).map((t)=> (
+                <option key={t} value={t.toLowerCase()}>{t}</option>
+              ))}
+            </select>
+          </div>
+          <div>
             <label htmlFor="diff" className="dg-spec-label">Difficulty</label>
             <select id="diff" value={difficultyFilter} onChange={(e) => setDifficultyFilter(e.target.value)}>
               <option value="">All</option>
@@ -365,15 +374,6 @@ export default function GlobeClient() {
               <option value="">All</option>
               {availableOceans.map((o) => (
                 <option key={o} value={o.toLowerCase()}>{o}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="dtype" className="dg-spec-label">Dive type</label>
-            <select id="dtype" value={diveTypeFilter} onChange={(e) => setDiveTypeFilter(e.target.value)}>
-              <option value="">All</option>
-              {Array.from(new Set(sites.flatMap((s)=> (s.diveTypes || []) as string[]))).sort((a,b)=>a.localeCompare(b)).map((t)=> (
-                <option key={t} value={t.toLowerCase()}>{t}</option>
               ))}
             </select>
           </div>

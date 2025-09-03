@@ -153,15 +153,6 @@ body.dg-body { margin: 0; background-size: 200% 200%; animation: dg-gradient-mov
 
   .dg-filter-row > div { width: var(--filter-width-mobile); min-width: var(--filter-width-mobile); flex: 1 1 var(--filter-width-mobile); }
   .dg-filter-row select { width: 100%; }
-  .dg-filters > div { width: var(--filter-width-mobile); min-width: var(--filter-width-mobile); flex: 0 0 var(--filter-width-mobile); }
-  .dg-filters {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-    padding-bottom: 4px;
-  }
-  .dg-filters > div { min-width: 140px; flex: 1 1 140px; }
-  .dg-filters select { width: auto; }
   .dg-actions { flex-direction: column; align-items: stretch; }
   .dg-actions .dg-btn { width: 100%; text-align: center; }
 }

@@ -91,20 +91,20 @@ export default function DiveFilterBar({ sites, initial }: Props) {
   return (
     <form className="dg-filters" action="#" onSubmit={(e)=>e.preventDefault()}>
       <div>
+        <label htmlFor="divetype">Dive Type</label>
+        <select id="divetype" name="divetype" value={diveType} onChange={(e)=>update('divetype', e.target.value)}>
+          <option value="">All</option>
+          {diveTypes.map((t)=> (
+            <option key={t} value={t.toLowerCase()}>{t}</option>
+          ))}
+        </select>
+      </div>
+      <div>
         <label htmlFor="difficulty">Difficulty</label>
         <select id="difficulty" name="difficulty" value={difficulty} onChange={(e)=>update('difficulty', e.target.value)}>
           <option value="">All</option>
           {difficulties.map((d)=> (
             <option key={d} value={String(d).toLowerCase()}>{d}</option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label htmlFor="divetype">Dive type</label>
-        <select id="divetype" name="divetype" value={diveType} onChange={(e)=>update('divetype', e.target.value)}>
-          <option value="">All</option>
-          {diveTypes.map((t)=> (
-            <option key={t} value={t.toLowerCase()}>{t}</option>
           ))}
         </select>
       </div>
