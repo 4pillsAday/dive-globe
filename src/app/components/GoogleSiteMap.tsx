@@ -79,7 +79,7 @@ export default function GoogleSiteMap({ lat, lng, name, fallbackCenter }: Props)
             title: place.name,
           });
           marker.addListener('click', () => {
-            const url = `https://www.google.com/maps/place/?q=place_id:${place.place_id}`;
+            const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name ?? 'dive shop')}&query_place_id=${place.place_id}`;
             const rating = place.rating;
             const totalRatings = place.user_ratings_total;
             let ratingHtml = '';
