@@ -10,6 +10,7 @@
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview --port=8787"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.57.2",
     "leaflet": "^1.9.4",
     "next": "15.5.2",
     "react": "19.1.0",
