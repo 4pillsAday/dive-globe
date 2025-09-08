@@ -28,7 +28,7 @@ function rewriteLinks(root: HTMLElement) {
       if (txt.includes("home") || txt.includes("feature")) a.href = map["#home"];
       else if (txt.includes("about")) a.href = "/about";
       else if (txt.includes("dive")) a.href = "/dive";
-      else if (txt.includes("log in")) a.href = "/login";
+      else if (txt.includes("log in")) a.href = "/log-in";
       return;
     }
     if (href in map) a.href = map[href];
@@ -63,6 +63,8 @@ export default function NavbarFixed() {
       const a = t.closest("a") as HTMLAnchorElement | null;
       if (!a) return;
       const href = a.getAttribute("href") || "";
+      if (href === "/log-in") return; // Allow default browser navigation for external login page
+
       if (!href.startsWith("http") && !href.startsWith("mailto:")) {
         e.preventDefault();
         // Push relative route; Next will prefix basePath exactly once
