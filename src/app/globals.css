@@ -139,6 +139,14 @@ body.dg-body { margin: 0; background-size: 200% 200%; animation: dg-gradient-mov
 .dg-filter-row > div { width: var(--filter-width); min-width: var(--filter-width); flex: 0 0 var(--filter-width); }
 .dg-filter-row select { width: 100%; background: #0a1a2f; color: #eaf6ff; border: 1px solid #17304f; border-radius: 8px; padding: 6px 10px; pointer-events: auto; }
 
+/* Add styles to hide/show login/account buttons based on auth state */
+.is-logged-out .show-when-auth {
+  display: none !important;
+}
+.is-logged-in .show-when-guest {
+  display: none !important;
+}
+
 @media (max-width: 640px) {
   .dg-home { height: auto; min-height: calc(100vh - 120px); }
   :root { --navbar-height: 112px; }

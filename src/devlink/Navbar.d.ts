@@ -7,6 +7,8 @@ declare function Navbar(props: {
   navbarLinkDiveSites?: React.ReactNode;
   navbarLinkAbout?: React.ReactNode;
   navbarLinkContact?: React.ReactNode;
-  buttonTextDiveIn?: React.ReactNode;
+  buttonTextLogIn?: React.ReactNode;
   localeDropdownSlot?: Types.Devlink.Slot;
+  navbarLinkDiveMap?: React.ReactNode;
+  buttonTextMyAccount?: React.ReactNode;
 }): React.JSX.Element;

@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Session } from "@supabase/supabase-js";
 import { Navbar } from "@/devlink/Navbar";
+import { supabase } from "@/lib/supabaseClient";
 
 function rewriteLinks(root: HTMLElement) {
   // Use relative app routes; Next.js basePath will be applied automatically
@@ -60,14 +62,33 @@ export default function NavbarFixed() {
     };
   }, [router]);
 
+  const [session, setSession] = useState<Session | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const authStateClass = session ? 'is-logged-in' : 'is-logged-out';
+
   return (
-    <div ref={ref}>
+    <div ref={ref} className={authStateClass}>
       <Navbar
         navbarLinkHome="Home"
         navbarLinkDiveSites="Dive Sites"
         navbarLinkAbout="About"
         navbarLinkContact=""
-        buttonTextDiveIn="Explore"
+        buttonTextLogIn="Log In"
+        buttonTextMyAccount="My Account"
       />
     </div>
   );

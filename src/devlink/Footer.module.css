@@ -249,6 +249,12 @@
   box-shadow: 0 1px 2px 0 hsla(219.99999999999997, 42.86%, 10.98%, 0.05), 0 0 0 4px hsla(73.7007874015748, 75.15%, 66.86%, 0.50);
 }
 
+@media screen and (max-width: 991px) {
+  .button {
+    display: flex;
+  }
+}
+
 @media screen and (max-width: 767px) {
   .button {
     font-size: 1rem;
@@ -259,6 +265,38 @@
   .button:hover {
     border-color: #7f56d9;
     background-color: #7f56d9;
+  }
+}
+
+.show-tablet {
+  display: none;
+}
+
+@media screen and (max-width: 991px) {
+  .show-tablet {
+    display: block;
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .button.nav-right-button {
+    display: none;
+  }
+}
+
+.button.nav-inner-right-button {
+  display: none;
+}
+
+@media screen and (max-width: 991px) {
+  .button.nav-inner-right-button {
+    display: flex;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .button.nav-inner-right-button.show-when-guest {
+    display: flex;
   }
 }
 

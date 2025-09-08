@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { DevLinkProvider } from "@/devlink/DevLinkProvider";
-//import NavbarFixed from "@/app/components/NavbarFixed";
-import { Navbar } from "@/devlink/Navbar";
+import NavbarFixed from "@/app/components/NavbarFixed";
 import { Footer } from "@/devlink/Footer";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -23,7 +22,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased dg-body`}>
         <DevLinkProvider>
           <header>
-            <Navbar />
+            <NavbarFixed />
           </header>
           <div className="dg-content">{children}</div>
           <footer>
