@@ -41,16 +41,17 @@ export default function NavbarFixed() {
   const sessionRef = useRef<Session | null>(null);
 
   function applyAuthVisibility(root: HTMLElement, isLoggedIn: boolean) {
-    const guestLinks = root.querySelectorAll<HTMLAnchorElement>(
-      "a.show-when-guest"
+    // Prefer robust selectors that don't rely on CSS module classnames
+    const loginLinks = root.querySelectorAll<HTMLAnchorElement>(
+      'a[href="/log-in"]'
     );
-    const authLinks = root.querySelectorAll<HTMLAnchorElement>(
-      "a.show-when-auth"
+    const accountLinks = root.querySelectorAll<HTMLAnchorElement>(
+      'a[href="/user-profile"]'
     );
-    guestLinks.forEach((a) => {
+    loginLinks.forEach((a) => {
       a.style.display = isLoggedIn ? "none" : "";
     });
-    authLinks.forEach((a) => {
+    accountLinks.forEach((a) => {
       a.style.display = isLoggedIn ? "" : "none";
     });
   }
