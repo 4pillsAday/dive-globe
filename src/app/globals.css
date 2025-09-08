@@ -140,10 +140,10 @@ body.dg-body { margin: 0; background-size: 200% 200%; animation: dg-gradient-mov
 .dg-filter-row select { width: 100%; background: #0a1a2f; color: #eaf6ff; border: 1px solid #17304f; border-radius: 8px; padding: 6px 10px; pointer-events: auto; }
 
 /* Add styles to hide/show login/account buttons based on auth state */
-.is-logged-out .show-when-auth {
+.is-logged-out a.show-when-auth {
   display: none !important;
 }
-.is-logged-in .show-when-guest {
+.is-logged-in a.show-when-guest {
   display: none !important;
 }
 
