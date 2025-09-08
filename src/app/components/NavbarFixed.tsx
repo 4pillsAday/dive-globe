@@ -28,7 +28,7 @@ function rewriteLinks(root: HTMLElement) {
       if (txt.includes("home") || txt.includes("feature")) a.href = map["#home"];
       else if (txt.includes("about")) a.href = "/about";
       else if (txt.includes("dive")) a.href = "/dive";
-      else if (txt.includes("log in")) a.href = "/login";
+      else if (txt.includes("log in")) a.href = "/log-in";
       return;
     }
     if (href in map) a.href = map[href];
