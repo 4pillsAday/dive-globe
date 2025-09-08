@@ -28,7 +28,7 @@ function rewriteLinks(root: HTMLElement) {
       if (txt.includes("home") || txt.includes("feature")) a.href = map["#home"];
       else if (txt.includes("about")) a.href = "/about";
       else if (txt.includes("dive")) a.href = "/dive";
-      else if (txt.includes("log in")) a.href = "/log-in";
+      else if (txt.includes("log in")) a.href = "/login";
       return;
     }
     if (href in map) a.href = map[href];
@@ -38,6 +38,22 @@ function rewriteLinks(root: HTMLElement) {
 export default function NavbarFixed() {
   const ref = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
+  const sessionRef = useRef<Session | null>(null);
+
+  function applyAuthVisibility(root: HTMLElement, isLoggedIn: boolean) {
+    const guestLinks = root.querySelectorAll<HTMLAnchorElement>(
+      "a.show-when-guest"
+    );
+    const authLinks = root.querySelectorAll<HTMLAnchorElement>(
+      "a.show-when-auth"
+    );
+    guestLinks.forEach((a) => {
+      a.style.display = isLoggedIn ? "none" : "";
+    });
+    authLinks.forEach((a) => {
+      a.style.display = isLoggedIn ? "" : "none";
+    });
+  }
 
   useEffect(() => {
     const el = ref.current;
@@ -46,11 +62,13 @@ export default function NavbarFixed() {
     // The DevLink component can reset links back to their Webflow defaults.
     // We need to rewrite them on initial mount and whenever the component updates itself.
     rewriteLinks(el);
+    applyAuthVisibility(el, !!sessionRef.current);
 
     const mo = new MutationObserver(() => {
       // Temporarily disconnect the observer to prevent an infinite loop from our own changes.
       mo.disconnect();
       rewriteLinks(el);
+      applyAuthVisibility(el, !!sessionRef.current);
       // Reconnect the observer to watch for future changes from the DevLink component.
       mo.observe(el, { subtree: true, childList: true, attributes: true });
     });
@@ -84,16 +102,24 @@ export default function NavbarFixed() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      sessionRef.current = session;
+      if (ref.current) applyAuthVisibility(ref.current, !!session);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      sessionRef.current = session;
+      if (ref.current) applyAuthVisibility(ref.current, !!session);
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (ref.current) applyAuthVisibility(ref.current, !!session);
+  }, [session]);
 
   const authStateClass = session ? 'is-logged-in' : 'is-logged-out';
 
