@@ -12,6 +12,10 @@ function rewriteLinks(root: HTMLElement) {
     "/investment-strategies": "/dive",
     "/contact-us": "/about",
     "#home": "/",
+    // Add mappings for the incorrect Webflow routes
+    "/app": "/",
+    "/app/dive": "/dive",
+    "/app/about": "/about",
   };
 
   const anchors = root.querySelectorAll<HTMLAnchorElement>("a");
