@@ -143,11 +143,11 @@ body.dg-body { margin: 0; background-size: 200% 200%; animation: dg-gradient-mov
  * Hide/show login/account buttons based on auth state.
  * Targets both desktop (.nav-right-block) and mobile (.navbar-button-wrapper) button containers.
 */
-/* Use anchor-level classes so we don't depend on CSS Module hashes */
-.is-logged-out a.show-when-auth {
+/* Use substring match to work with CSS Module hashed classnames */
+.is-logged-out a[class*="show-when-auth"] {
   display: none !important;
 }
-.is-logged-in a.show-when-guest {
+.is-logged-in a[class*="show-when-guest"] {
   display: none !important;
 }
 
