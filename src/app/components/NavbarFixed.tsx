@@ -42,10 +42,18 @@ export default function NavbarFixed() {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
+    // The DevLink component can reset links back to their Webflow defaults.
+    // We need to rewrite them on initial mount and whenever the component updates itself.
     rewriteLinks(el);
 
-    // Keep links rewritten on menu toggles/responsive clones
-    const mo = new MutationObserver(() => rewriteLinks(el));
+    const mo = new MutationObserver(() => {
+      // Temporarily disconnect the observer to prevent an infinite loop from our own changes.
+      mo.disconnect();
+      rewriteLinks(el);
+      // Reconnect the observer to watch for future changes from the DevLink component.
+      mo.observe(el, { subtree: true, childList: true, attributes: true });
+    });
     mo.observe(el, { subtree: true, childList: true, attributes: true });
 
     // Intercept clicks to ensure client-side nav under basePath
