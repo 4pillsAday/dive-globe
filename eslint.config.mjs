@@ -11,7 +11,17 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
-  { ignorePatterns: ["**/devlink/**"] },
+  {
+    ignores: [
+      "node_modules/**",
+      ".next/**",
+      "out/**",
+      "build/**",
+      "next-env.d.ts",
+      // Ignore generated Webflow DevLink files (contain many any types and JS warnings)
+      "src/devlink/**",
+    ],
+  },
 ];
 
 export default eslintConfig;

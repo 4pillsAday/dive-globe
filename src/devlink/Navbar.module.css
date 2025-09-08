@@ -1,7 +1,21 @@
+.navbar {
+  margin-top: 15px;
+}
+
+@media screen and (max-width: 479px) {
+  .navbar {
+    margin-right: 0px;
+    padding-right: 0px;
+  }
+}
+
 .navbar-component {
   display: flex;
   min-height: 80px;
+  margin-top: 5px;
+  margin-bottom: 0px;
   padding-right: 2rem;
+  padding-bottom: 0px;
   padding-left: 2rem;
   align-items: center;
 
@@ -25,6 +39,19 @@
   margin-left: auto;
   justify-content: space-between;
   align-items: center;
+}
+
+@media screen and (max-width: 767px) {
+  .image-5 {
+    display: inline-block;
+    margin-left: 84px;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .image-5 {
+    margin-left: 8px;
+  }
 }
 
 .navbar-menu {
@@ -91,7 +118,7 @@
 }
 
 .navbar-link:global(.w--current) {
-  color: hsla(0, 0.00%, 0.00%, 1.00);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 @media screen and (max-width: 991px) {
@@ -137,7 +164,7 @@
 }
 
 .navbar-button-wrapper {
-  display: flex;
+  display: none;
   margin-left: 10px;
   align-items: center;
   grid-column-gap: 0.75rem;
@@ -153,82 +180,23 @@
   }
 }
 
-.button-secondary {
-  display: flex;
-  padding: 0.625rem 1.125rem;
-  justify-content: center;
-  align-items: center;
-  grid-column-gap: 0.5rem;
-
-  border-color: var(--borderRadius-c0417f39);
-  border-radius: 0.5rem;
-
-  background-color: hsla(0, 0.00%, 6.67%, 1.00);
-
-  transition: all 300ms ease;
-
-  color: hsla(0, 0.00%, 100.00%, 1.00);
-  font-size: 16px;
-  line-height: 1.5;
-  font-weight: 600;
-  text-align: center;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.button-secondary:hover {
-  border-color: hsla(0, 0.00%, 28.67%, 1.00);
-  background-color: hsla(210, 0.00%, 0.00%, 1.00);
-  color: hsla(0, 0.00%, 100.00%, 1.00);
-}
-
-.button-secondary:focus {
-  background-color: hsla(0, 0.00%, 100.00%, 1.00);
-  box-shadow: 0 1px 2px 0 hsla(219.99999999999997, 42.86%, 10.98%, 0.05), 0 0 0 4px hsla(215.9999999999998, 23.81%, 95.88%, 1.00);
-}
-
-@media screen and (max-width: 767px) {
-  .button-secondary {
-    padding-left: 1.25rem;
-    font-size: 1rem;
-  }
-}
-
-@media screen and (max-width: 767px) {
-  .button-secondary:hover {
-    background-color: hsla(0, 0.00%, 100.00%, 1.00);
-    color: #344054;
-  }
-}
-
-.button-secondary.show-tablet {
-  display: none;
-}
-
-@media screen and (max-width: 991px) {
-  .button-secondary.show-tablet {
-    display: block;
-  }
-}
-
-.show-tablet {
-  display: none;
-}
-
-@media screen and (max-width: 991px) {
-  .show-tablet {
-    display: block;
-  }
-}
-
 .button {
+  position: static;
+
   display: flex;
   padding: 10px 18px;
+  flex-direction: row;
   justify-content: center;
+  flex-wrap: nowrap;
   align-items: center;
+  flex: 0 auto;
+  grid-auto-columns: 1fr;
   grid-column-gap: 0.5rem;
+  grid-row-gap: 16px;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
 
-  border-radius: 0.5rem;
+  border-radius: 10px;
 
   background-color: hsla(93.57798165137613, 0.00%, 100.00%, 1.00);
 
@@ -240,6 +208,8 @@
   font-weight: 600;
   text-align: center;
   text-decoration: none;
+  background-clip: border-box;
+  -webkit-text-fill-color: inherit;
 }
 
 .button:hover {
@@ -254,6 +224,12 @@
   box-shadow: 0 1px 2px 0 hsla(219.99999999999997, 42.86%, 10.98%, 0.05), 0 0 0 4px hsla(73.7007874015748, 75.15%, 66.86%, 0.50);
 }
 
+@media screen and (max-width: 991px) {
+  .button {
+    display: flex;
+  }
+}
+
 @media screen and (max-width: 767px) {
   .button {
     font-size: 1rem;
@@ -264,6 +240,50 @@
   .button:hover {
     border-color: #7f56d9;
     background-color: #7f56d9;
+  }
+}
+
+.show-tablet {
+  display: none;
+}
+
+@media screen and (max-width: 991px) {
+  .show-tablet {
+    display: block;
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .button.nav-right-button {
+    display: none;
+  }
+}
+
+.button.nav-inner-right-button {
+  display: none;
+}
+
+@media screen and (max-width: 991px) {
+  .button.nav-inner-right-button {
+    display: flex;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .button.nav-inner-right-button.show-when-guest {
+    display: flex;
+  }
+}
+
+.nav-right-block {
+  display: flex;
+  grid-column-gap: 8px;
+  grid-row-gap: 8px;
+}
+
+@media screen and (max-width: 991px) {
+  .nav-right-block {
+    display: none;
   }
 }
 

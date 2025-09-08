@@ -11,12 +11,14 @@ const _interactionsData = JSON.parse(
 
 export function Navbar({
   as: _Component = _Builtin.Section,
-  navbarLinkFeatures = "Features",
-  navbarLinkProducts = "Products",
-  navbarLinkResources = "Resources",
+  navbarLinkHome = "Home",
+  navbarLinkDiveSites = "Dive Sites",
+  navbarLinkAbout = "About",
   navbarLinkContact = "Contact",
-  buttonTextGetStarted = "Get started",
+  buttonTextLogIn = "Log In",
   localeDropdownSlot,
+  navbarLinkDiveMap = "Dive Map",
+  buttonTextMyAccount = "My Account",
 }) {
   _interactions.useInteractions(_interactionsData, _styles);
 
@@ -53,13 +55,12 @@ export function Navbar({
             }}
           >
             <_Builtin.Image
-              loading="lazy"
-              width="auto"
+              className={_utils.cx(_styles, "image-5")}
+              width="213"
               height="auto"
-              role="img"
-              data-caption="Astral fund logo"
+              loading="lazy"
               alt=""
-              src="https://cdn.prod.website-files.com/68b4780ae068710d86aee4bb/68b4780be068710d86aee56c_AstralFund%20Logo.svg"
+              src="https://cdn.prod.website-files.com/68b4780ae068710d86aee4bb/68b8ae0fb69b8f58c5560501_DiveGlobe%20NoBG.png"
             />
           </_Builtin.NavbarBrand>
           <_Builtin.NavbarMenu
@@ -74,34 +75,35 @@ export function Navbar({
               <_Builtin.NavbarLink
                 className={_utils.cx(_styles, "navbar-link")}
                 options={{
-                  href: "#",
+                  href: "https://dive-globe.webflow.io",
                 }}
               >
-                {navbarLinkFeatures}
+                {navbarLinkHome}
               </_Builtin.NavbarLink>
               <_Builtin.NavbarLink
                 className={_utils.cx(_styles, "navbar-link")}
                 options={{
-                  href: "/investment-strategies",
+                  href: "/app",
                 }}
               >
-                {navbarLinkProducts}
+                {navbarLinkDiveMap}
               </_Builtin.NavbarLink>
               <_Builtin.NavbarLink
                 className={_utils.cx(_styles, "navbar-link")}
                 options={{
-                  href: "#",
+                  href: "/app/dive",
+                  preload: "none",
                 }}
               >
-                {navbarLinkResources}
+                {navbarLinkDiveSites}
               </_Builtin.NavbarLink>
               <_Builtin.NavbarLink
                 className={_utils.cx(_styles, "navbar-link")}
                 options={{
-                  href: "/contact-us",
+                  href: "/app/about",
                 }}
               >
-                {navbarLinkContact}
+                {navbarLinkAbout}
               </_Builtin.NavbarLink>
             </_Builtin.Block>
             <_Builtin.Block
@@ -115,8 +117,9 @@ export function Navbar({
                 <_Builtin.Link
                   className={_utils.cx(
                     _styles,
-                    "button-secondary",
-                    "show-tablet"
+                    "button",
+                    "nav-inner-right-button",
+                    "show-when-guest"
                   )}
                   button={false}
                   block="inline"
@@ -124,23 +127,63 @@ export function Navbar({
                     href: "#",
                   }}
                 >
-                  <_Builtin.Block tag="div">{"Log in"}</_Builtin.Block>
+                  <_Builtin.Block tag="div">{buttonTextLogIn}</_Builtin.Block>
                 </_Builtin.Link>
                 <_Builtin.Link
-                  className={_utils.cx(_styles, "button")}
+                  className={_utils.cx(
+                    _styles,
+                    "button",
+                    "nav-inner-right-button",
+                    "show-when-auth"
+                  )}
                   button={false}
                   block="inline"
                   options={{
-                    href: "#",
+                    href: "/user-profile",
                   }}
                 >
                   <_Builtin.Block tag="div">
-                    {buttonTextGetStarted}
+                    {buttonTextMyAccount}
                   </_Builtin.Block>
                 </_Builtin.Link>
               </_Builtin.Block>
             </_Builtin.Block>
           </_Builtin.NavbarMenu>
+          <_Builtin.Block
+            className={_utils.cx(_styles, "nav-right-block")}
+            tag="div"
+          >
+            <_Builtin.Link
+              className={_utils.cx(
+                _styles,
+                "button",
+                "nav-right-button",
+                "show-when-guest"
+              )}
+              button={false}
+              block="inline"
+              options={{
+                href: "#",
+              }}
+            >
+              <_Builtin.Block tag="div">{buttonTextLogIn}</_Builtin.Block>
+            </_Builtin.Link>
+            <_Builtin.Link
+              className={_utils.cx(
+                _styles,
+                "button",
+                "nav-right-button",
+                "show-when-auth"
+              )}
+              button={false}
+              block="inline"
+              options={{
+                href: "/user-profile",
+              }}
+            >
+              <_Builtin.Block tag="div">{buttonTextMyAccount}</_Builtin.Block>
+            </_Builtin.Link>
+          </_Builtin.Block>
           <_Builtin.NavbarButton
             className={_utils.cx(_styles, "navbar-menu-button")}
             tag="div"

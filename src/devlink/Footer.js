@@ -20,6 +20,10 @@ export function Footer({ as: _Component = _Builtin.Section }) {
         >
           <_Builtin.Block
             className={_utils.cx(_styles, "footer-left-wrapper")}
+            id={_utils.cx(
+              _styles,
+              "w-node-_9fa3a9c4-87d4-19b0-95f7-1b0b099f82a3-099f82a0"
+            )}
             tag="div"
           >
             <_Builtin.NavbarBrand
@@ -29,11 +33,12 @@ export function Footer({ as: _Component = _Builtin.Section }) {
               }}
             >
               <_Builtin.Image
+                className={_utils.cx(_styles, "image-4")}
                 loading="lazy"
-                width="auto"
+                width="250"
                 height="auto"
                 alt=""
-                src="https://cdn.prod.website-files.com/68b4780ae068710d86aee4bb/68b4780be068710d86aee56c_AstralFund%20Logo.svg"
+                src="https://cdn.prod.website-files.com/68b4780ae068710d86aee4bb/68b8ae0fb69b8f58c5560501_DiveGlobe%20NoBG.png"
               />
             </_Builtin.NavbarBrand>
             <_Builtin.Block
@@ -55,7 +60,12 @@ export function Footer({ as: _Component = _Builtin.Section }) {
                 id="email-form"
               >
                 <_Builtin.FormTextInput
-                  className={_utils.cx(_styles, "form-input")}
+                  className={_utils.cx(
+                    _styles,
+                    "form-input",
+                    "w-node-_9fa3a9c4-87d4-19b0-95f7-1b0b099f82aa-099f82a0"
+                  )}
+                  id={_utils.cx(_styles, "email")}
                   autoFocus={false}
                   maxLength={256}
                   name="email-2"
@@ -64,10 +74,13 @@ export function Footer({ as: _Component = _Builtin.Section }) {
                   type="email"
                   disabled={false}
                   required={true}
-                  id="email"
                 />
                 <_Builtin.FormButton
                   className={_utils.cx(_styles, "button")}
+                  id={_utils.cx(
+                    _styles,
+                    "w-node-_9fa3a9c4-87d4-19b0-95f7-1b0b099f82ab-099f82a0"
+                  )}
                   type="submit"
                   value="Subscribe"
                   data-wait="Please wait..."
@@ -107,138 +120,18 @@ export function Footer({ as: _Component = _Builtin.Section }) {
           </_Builtin.Block>
           <_Builtin.Grid
             className={_utils.cx(_styles, "footer-menu-wrapper")}
+            id={_utils.cx(
+              _styles,
+              "w-node-_9fa3a9c4-87d4-19b0-95f7-1b0b099f82b7-099f82a0"
+            )}
             tag="div"
           >
             <_Builtin.Block
               className={_utils.cx(_styles, "footer-link-list")}
-              tag="div"
-            >
-              <_Builtin.Block
-                className={_utils.cx(_styles, "footer-link-list-heading")}
-                tag="div"
-              >
-                {"Banking"}
-              </_Builtin.Block>
-              <_Builtin.Link
-                className={_utils.cx(_styles, "footer-link")}
-                button={false}
-                block="inline"
-                options={{
-                  href: "#",
-                }}
-              >
-                <_Builtin.Block tag="div">{"Overview"}</_Builtin.Block>
-              </_Builtin.Link>
-              <_Builtin.Link
-                className={_utils.cx(_styles, "footer-link")}
-                button={false}
-                block="inline"
-                options={{
-                  href: "#",
-                }}
-              >
-                <_Builtin.Block tag="div">{"Features"}</_Builtin.Block>
-              </_Builtin.Link>
-              <_Builtin.Link
-                className={_utils.cx(_styles, "footer-link")}
-                button={false}
-                block="inline"
-                options={{
-                  href: "#",
-                }}
-              >
-                <_Builtin.Block tag="div">{"Solutions"}</_Builtin.Block>
-                <_Builtin.Block
-                  className={_utils.cx(_styles, "badge")}
-                  tag="div"
-                >
-                  <_Builtin.Block tag="div">{"New"}</_Builtin.Block>
-                </_Builtin.Block>
-              </_Builtin.Link>
-              <_Builtin.Link
-                className={_utils.cx(_styles, "footer-link")}
-                button={false}
-                block="inline"
-                options={{
-                  href: "#",
-                }}
-              >
-                <_Builtin.Block tag="div">{"Pricing"}</_Builtin.Block>
-              </_Builtin.Link>
-              <_Builtin.Link
-                className={_utils.cx(_styles, "footer-link")}
-                button={false}
-                block="inline"
-                options={{
-                  href: "#",
-                }}
-              >
-                <_Builtin.Block tag="div">{"Releases"}</_Builtin.Block>
-              </_Builtin.Link>
-            </_Builtin.Block>
-            <_Builtin.Block
-              className={_utils.cx(_styles, "footer-link-list")}
-              tag="div"
-            >
-              <_Builtin.Block
-                className={_utils.cx(_styles, "footer-link-list-heading")}
-                tag="div"
-              >
-                {"Resources"}
-              </_Builtin.Block>
-              <_Builtin.Link
-                className={_utils.cx(_styles, "footer-link")}
-                button={false}
-                block="inline"
-                options={{
-                  href: "#",
-                }}
-              >
-                <_Builtin.Block tag="div">{"Blog"}</_Builtin.Block>
-              </_Builtin.Link>
-              <_Builtin.Link
-                className={_utils.cx(_styles, "footer-link")}
-                button={false}
-                block="inline"
-                options={{
-                  href: "#",
-                }}
-              >
-                <_Builtin.Block tag="div">{"Newsletter"}</_Builtin.Block>
-              </_Builtin.Link>
-              <_Builtin.Link
-                className={_utils.cx(_styles, "footer-link")}
-                button={false}
-                block="inline"
-                options={{
-                  href: "#",
-                }}
-              >
-                <_Builtin.Block tag="div">{"Events"}</_Builtin.Block>
-              </_Builtin.Link>
-              <_Builtin.Link
-                className={_utils.cx(_styles, "footer-link")}
-                button={false}
-                block="inline"
-                options={{
-                  href: "#",
-                }}
-              >
-                <_Builtin.Block tag="div">{"Tutorials"}</_Builtin.Block>
-              </_Builtin.Link>
-              <_Builtin.Link
-                className={_utils.cx(_styles, "footer-link")}
-                button={false}
-                block="inline"
-                options={{
-                  href: "#",
-                }}
-              >
-                <_Builtin.Block tag="div">{"Support"}</_Builtin.Block>
-              </_Builtin.Link>
-            </_Builtin.Block>
-            <_Builtin.Block
-              className={_utils.cx(_styles, "footer-link-list")}
+              id={_utils.cx(
+                _styles,
+                "w-node-_9fa3a9c4-87d4-19b0-95f7-1b0b099f82e5-099f82a0"
+              )}
               tag="div"
             >
               <_Builtin.Block
@@ -300,6 +193,71 @@ export function Footer({ as: _Component = _Builtin.Section }) {
                 />
               </_Builtin.Link>
             </_Builtin.Block>
+            <_Builtin.Block
+              className={_utils.cx(_styles, "footer-link-list")}
+              id={_utils.cx(
+                _styles,
+                "w-node-_9fa3a9c4-87d4-19b0-95f7-1b0b099f82d0-099f82a0"
+              )}
+              tag="div"
+            >
+              <_Builtin.Block
+                className={_utils.cx(_styles, "footer-link-list-heading")}
+                tag="div"
+              >
+                {"Resources"}
+              </_Builtin.Block>
+              <_Builtin.Link
+                className={_utils.cx(_styles, "footer-link")}
+                button={false}
+                block="inline"
+                options={{
+                  href: "#",
+                }}
+              >
+                <_Builtin.Block tag="div">{"Blog"}</_Builtin.Block>
+              </_Builtin.Link>
+              <_Builtin.Link
+                className={_utils.cx(_styles, "footer-link")}
+                button={false}
+                block="inline"
+                options={{
+                  href: "#",
+                }}
+              >
+                <_Builtin.Block tag="div">{"Newsletter"}</_Builtin.Block>
+              </_Builtin.Link>
+              <_Builtin.Link
+                className={_utils.cx(_styles, "footer-link")}
+                button={false}
+                block="inline"
+                options={{
+                  href: "#",
+                }}
+              >
+                <_Builtin.Block tag="div">{"Events"}</_Builtin.Block>
+              </_Builtin.Link>
+              <_Builtin.Link
+                className={_utils.cx(_styles, "footer-link")}
+                button={false}
+                block="inline"
+                options={{
+                  href: "#",
+                }}
+              >
+                <_Builtin.Block tag="div">{"Tutorials"}</_Builtin.Block>
+              </_Builtin.Link>
+              <_Builtin.Link
+                className={_utils.cx(_styles, "footer-link")}
+                button={false}
+                block="inline"
+                options={{
+                  href: "#",
+                }}
+              >
+                <_Builtin.Block tag="div">{"Support"}</_Builtin.Block>
+              </_Builtin.Link>
+            </_Builtin.Block>
           </_Builtin.Grid>
         </_Builtin.Grid>
         <_Builtin.Block
@@ -310,7 +268,10 @@ export function Footer({ as: _Component = _Builtin.Section }) {
             className={_utils.cx(_styles, "text-small", "text-color-light")}
             tag="div"
           >
-            {"© 2023 AstralFundFinancial. All rights reserved."}
+            {"© 2025 Dive Globe. Built For Divers. "}
+            <_Builtin.Span className={_utils.cx(_styles, "text-color-blue")}>
+              {"Stay Curious."}
+            </_Builtin.Span>
           </_Builtin.Block>
           <_Builtin.Grid
             className={_utils.cx(_styles, "footer-legal-list")}

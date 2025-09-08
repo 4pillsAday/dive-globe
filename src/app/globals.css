@@ -6,8 +6,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0b1622;
+  --foreground: #e6f1ff;
+  --surface: rgba(10, 26, 47, 0.66);
+  --surface-contrast: rgba(255,255,255,0.12);
+  --accent: #7efaff;
+  --navbar-height: 80px; /* used to offset fixed filter bar under Navbar */
+  --filter-width: 160px;
+  --filter-width-mobile: 148px;
 }
 
 @theme inline {
@@ -19,13 +25,142 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0a0f17;
+    --foreground: #e6f1ff;
   }
 }
 
 body {
-  background: var(--background);
+  background: radial-gradient(1200px 800px at -10% -20%, rgba(126,250,255,0.08), transparent 40%),
+              radial-gradient(800px 600px at 110% 10%, rgba(188,82,238,0.10), transparent 45%),
+              var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Migrated DiveGlobe UI styles */
+html, body, #__next { height: 100%; }
+* { box-sizing: border-box; }
+ a { color: inherit; text-decoration: none; }
+body.dg-body { margin: 0; background-size: 200% 200%; animation: dg-gradient-move 18s ease infinite; color: var(--foreground); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, Apple Color Emoji, Segoe UI Emoji; }
+@keyframes dg-gradient-move { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+.dg-header, .dg-footer { max-width: 1200px; margin: 0 auto; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
+.dg-header { border-bottom: 1px solid var(--surface-contrast); background: var(--surface); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 20; }
+.dg-footer { border-top: 1px solid var(--surface-contrast); opacity: 0.95; color: #cfe9ff; }
+.dg-brand { font-weight: 800; letter-spacing: 0.2px; color: #ffffff; }
+.dg-nav { display: flex; gap: 12px; }
+.dg-nav-link { padding: 8px 10px; border-radius: 8px; color: #eaf6ff; transition: background 150ms ease, transform 150ms ease; }
+.dg-nav-link.active, .dg-nav-link:hover { background: rgba(255, 255, 255, 0.12); color: #ffffff; transform: translateY(-1px); }
+
+.dg-content { min-height: calc(100vh - 120px); }
+.dg-home { height: calc(100vh - 120px); width: 100vw; }
+
+.dg-container { max-width: 1120px; margin: 24px auto; padding: 0 16px; }
+.dg-title { font-size: 28px; margin: 16px 0; color: #ffffff; }
+.dg-subtitle { color: #cfe9ff; margin: 4px 0 0; }
+.dg-accent { color: var(--accent); }
+
+.dg-filters { display: flex; gap: 16px; margin: 12px 0 20px; align-items: end; }
+.dg-filters label { display: block; font-size: 11px; color: #9ab6d1; margin-bottom: 2px; }
+.dg-filters select { background: #0a1a2f; color: #e6f1ff; border: 1px solid #17304f; border-radius: 10px; padding: 5px 10px; outline: none; box-shadow: 0 0 0 0 rgba(126,250,255,0.2); transition: box-shadow 150ms ease, border-color 150ms ease; }
+/* Ensure equal widths when using form-based filter (Dive Sites) */
+.dg-filters > div { width: var(--filter-width); min-width: var(--filter-width); flex: 0 0 var(--filter-width); }
+.dg-filters select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(126,250,255,0.15); }
+
+.dg-grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+.dg-card { background: linear-gradient(180deg, rgba(6, 22, 34, 0.85), rgba(6,22,34,0.7)); border: 1px solid var(--surface-contrast); border-radius: 14px; display: flex; flex-direction: column; color: #eaf6ff; box-shadow: 0 10px 30px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.04); overflow: hidden; }
+.dg-card-body { padding: 16px; display: flex; flex-direction: column; flex: 1; gap: 8px; }
+.dg-card-header { display: flex; align-items: baseline; gap: 8px; justify-content: space-between; }
+.dg-card-header h2 { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dg-card-header h2 { font-size: 20px; line-height: 1.25; font-weight: 700; }
+.dg-chip { background: rgba(255, 209, 102, 0.18); color: #ffe9a6; border: 1px solid rgba(255, 209, 102, 0.32); padding: 2px 8px; border-radius: 999px; font-size: 12px; }
+.dg-desc { color: #d4edff; margin: 8px 0 12px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; min-height: 3.6em; }
+.dg-meta { display: flex; gap: 10px; color: #b7dcff; font-size: 13px; }
+.dg-card-actions { padding: 14px; border-top: 1px solid var(--surface-contrast); background: rgba(255,255,255,0.03); }
+.dg-btn { display: inline-block; background: linear-gradient(180deg, #ff7d7d, #ff6b6b); color: #ffffff; border-radius: 10px; padding: 9px 14px; font-weight: 700; letter-spacing: 0.2px; box-shadow: 0 6px 18px rgba(255,107,107,0.25); transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease; }
+.dg-btn:hover { transform: translateY(-1px); filter: brightness(1.05); box-shadow: 0 10px 22px rgba(255,107,107,0.35); }
+
+/* Globe pin popup */
+.dg-popup { pointer-events: auto; transform: translate(-50%, -120%); background: rgba(9,18,30,0.92); color: #eaf6ff; border: 1px solid var(--surface-contrast); border-radius: 12px; padding: 10px 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); backdrop-filter: blur(8px); min-width: 200px; max-width: 280px; }
+.dg-popup-title { font-weight: 800; font-size: 14px; margin-bottom: 4px; letter-spacing: 0.2px; }
+.dg-popup-meta { font-size: 12px; color: #b7dcff; margin-bottom: 8px; }
+.dg-popup-btn { padding: 6px 10px; font-size: 12px; border-radius: 8px; }
+
+.dg-detail .dg-hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; align-items: center; }
+.dg-hero-text { padding: 8px 0; }
+.dg-hero-img { border-radius: 12px; border: 1px solid var(--surface-contrast); object-fit: cover; width: 100%; height: auto; box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
+.dg-hero-fallback { height: 220px; background: radial-gradient(circle at 30% 30%, rgba(126,250,255,0.18), transparent 60%); border-radius: 12px; border: 1px solid var(--surface-contrast); }
+.dg-section { margin-top: 18px; }
+.dg-specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 10px; }
+.dg-spec-label { color: #b7dcff; font-size: 12px; display: block; }
+.dg-desc-large { color: #eaf6ff; line-height: 1.6; }
+
+.dg-mini-map { margin: 18px 0; }
+.dg-iframe { width: 100%; height: 320px; border: 1px solid #17304f; border-radius: 10px; }
+
+/* Detail page actions */
+.dg-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.dg-actions .dg-btn { flex: 0 0 auto; }
+
+/* Home overlay filters */
+.dg-overlay {
+  position: static;
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+  margin-top: 6px;
+  pointer-events: none;
+}
+
+.dg-overlay--dive {
+  margin-top: 12px;
+}
+
+.dg-filter-row {
+  pointer-events: all;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: var(--surface);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--surface-contrast);
+  border-radius: 12px;
+  padding: 2px 6px;
+  max-width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+/* Flatten Dive page form wrapper so children align like the Home overlay */
+.dg-filter-row .dg-filters { display: contents; margin: 0; gap: 0; }
+/* Ensure labels in overlay filter rows match home overlay style */
+.dg-filter-row label { color: #b7dcff; font-size: 12px; display: block; }
+/* Remove extra vertical margin when filters are inside the overlay frame */
+.dg-overlay .dg-filters { margin: 0; }
+.dg-filter-row > div { width: var(--filter-width); min-width: var(--filter-width); flex: 0 0 var(--filter-width); }
+.dg-filter-row select { width: 100%; background: #0a1a2f; color: #eaf6ff; border: 1px solid #17304f; border-radius: 8px; padding: 6px 10px; pointer-events: auto; }
+
+/* Add styles to hide/show login/account buttons based on auth state */
+.is-logged-out .show-when-auth {
+  display: none !important;
+}
+.is-logged-in .show-when-guest {
+  display: none !important;
+}
+
+@media (max-width: 640px) {
+  .dg-home { height: auto; min-height: calc(100vh - 120px); }
+  :root { --navbar-height: 112px; }
+
+  .dg-filter-row {
+    gap: 4px;
+    padding: 4px 5px;
+    /* Allow wrapping on mobile instead of scrolling */
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .dg-filter-row > div { width: var(--filter-width-mobile); min-width: var(--filter-width-mobile); flex: 1 1 var(--filter-width-mobile); }
+  .dg-filter-row select { width: 100%; }
+  .dg-actions { flex-direction: column; align-items: stretch; }
+  .dg-actions .dg-btn { width: 100%; text-align: center; }
 }
