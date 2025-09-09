@@ -82,8 +82,8 @@ export default function NavbarFixed() {
       const a = t.closest("a") as HTMLAnchorElement | null;
       if (!a) return;
       const href = a.getAttribute("href") || "";
-      // Allow default browser navigation for external login/account pages
-      if (href === "/log-in" || href === "/user-profile") return;
+      // Allow default browser navigation for external login/account/about pages
+      if (href === "/log-in" || href === "/user-profile" || href === "/about") return;
 
       if (!href.startsWith("http") && !href.startsWith("mailto:")) {
         e.preventDefault();
