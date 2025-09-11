@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Rating from "./Rating";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 interface ReviewCardProps {
   review: {
@@ -20,13 +19,12 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
   const { rating, body, created_at, author, review_photos } = review;
   const authorName = author?.display_name || "Anonymous";
   const authorAvatar = author?.avatar_url;
-  const supabase = createClientComponentClient();
 
   const getPublicUrl = (storagePath: string) => {
-    const { data } = supabase.storage
-      .from("review-photos")
-      .getPublicUrl(storagePath);
-    return data.publicUrl;
+    // This is a simplified approach, assuming a consistent public URL structure.
+    // For production, you might want a more robust way to get this URL.
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    return `${supabaseUrl}/storage/v1/object/public/review-photos/${storagePath}`;
   };
 
   return (
