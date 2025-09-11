@@ -44,19 +44,9 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
 
     fetchReviews();
 
-    // First, check for an existing session
-    const getSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-    };
-    getSession();
-
-    // Then, listen for any auth state changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
 
@@ -150,7 +140,7 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
                 </p>
                 <p className="text-sm text-blue-700">
                   <a
-                    href={`/log-in?redirect=${pathname}`}
+                    href={`/log-in?redirect=/app${pathname}`}
                     className="font-semibold underline"
                   >
                     Log in
