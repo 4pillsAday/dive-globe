@@ -7,7 +7,7 @@ import _styles from "./Footer.module.css";
 export function Footer({ as: _Component = _Builtin.Section }) {
   return (
     <_Component
-      className={_utils.cx(_styles, "section")}
+      className={_utils.cx(_styles, "section", "section-2")}
       grid={{
         type: "section",
       }}
@@ -65,11 +65,11 @@ export function Footer({ as: _Component = _Builtin.Section }) {
                     "form-input",
                     "w-node-_9fa3a9c4-87d4-19b0-95f7-1b0b099f82aa-099f82a0"
                   )}
-                  id={_utils.cx(_styles, "email")}
+                  id={_utils.cx(_styles, "Submission-Email")}
                   autoFocus={false}
                   maxLength={256}
-                  name="email-2"
-                  data-name="Email 2"
+                  name="Submission-Email"
+                  data-name="Submission Email"
                   placeholder="Enter your email"
                   type="email"
                   disabled={false}

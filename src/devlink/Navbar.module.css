@@ -183,7 +183,8 @@
 .button {
   position: static;
 
-  display: flex;
+  display: block;
+  margin-top: 10px;
   padding: 10px 18px;
   flex-direction: row;
   justify-content: center;
