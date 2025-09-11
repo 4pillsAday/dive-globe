@@ -5,7 +5,6 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import ReviewCard from "./ReviewCard";
 import ReviewForm from "./ReviewForm";
 import { User } from "@supabase/supabase-js";
-import Link from "next/link";
 
 interface Review {
   id: string;
@@ -135,9 +134,9 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
                   Want to share your experience?
                 </p>
                 <p className="text-sm text-blue-700">
-                  <Link href="/login" className="font-semibold underline">
+                  <a href="/log-in" className="font-semibold underline">
                     Log in
-                  </Link>{" "}
+                  </a>{" "}
                   to leave a review and help other divers.
                 </p>
               </div>
