@@ -2,5 +2,6 @@
 	"files.associations": {
 		"wrangler.json": "jsonc"
 	},
-	"deno.enable": true
+	"deno.enable": true,
+	"makefile.configureOnOpen": false
 }
