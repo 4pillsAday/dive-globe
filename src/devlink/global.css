@@ -2179,6 +2179,7 @@ textarea.w-select {
   --gray-500: #757575;
   --gray-800: #222;
   --primary: #ffcc11;
+  --ocean-blue: hsla(203, 100.00%, 56.67%, 0.70);
   --primary-2: #ffcc11;
   --default-font: Inter, sans-serif;
   --default-padding: 50px;
