@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
+import supabase from '@/lib/supabaseClient';
 
 export default function AuthCallbackClient() {
   const [text, setText] = useState('Verifying your session…');
@@ -10,7 +10,6 @@ export default function AuthCallbackClient() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const supabase = createClient();
     // The browser client parses the URL hash and stores the session automatically.
     // We just check whether a session exists and then redirect.
     (async () => {
