@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/lib/supabase/client";
 import ReviewCard from "./ReviewCard";
 import ReviewForm from "./ReviewForm";
 import { User } from "@supabase/supabase-js";
@@ -28,12 +28,10 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const pathname = usePathname();
 
   useEffect(() => {
-    console.log("Reviews.tsx: useEffect triggered.");
-
     const fetchReviews = async () => {
       setLoading(true);
       const res = await fetch(`/api/dives/${diveSiteSlug}/reviews`);
@@ -49,17 +47,13 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log("Reviews.tsx: onAuthStateChange fired!", { _event, session });
       setUser(session?.user ?? null);
     });
 
     return () => {
-      console.log("Reviews.tsx: useEffect cleanup. Unsubscribing from auth changes.");
       subscription.unsubscribe();
     };
   }, [diveSiteSlug, supabase]);
-
-  console.log("Reviews.tsx: Rendering component with user state:", user);
 
   const handleReviewSubmit = async (
     rating: number,
