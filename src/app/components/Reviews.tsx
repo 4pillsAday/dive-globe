@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import ReviewCard from "./ReviewCard";
 import ReviewForm from "./ReviewForm";
@@ -28,15 +29,9 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const supabase = createClientComponentClient();
+  const pathname = usePathname();
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-    };
-
     const fetchReviews = async () => {
       setLoading(true);
       const res = await fetch(`/api/dives/${diveSiteSlug}/reviews`);
@@ -46,8 +41,18 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
       }
       setLoading(false);
     };
-    fetchUser();
+
     fetchReviews();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [diveSiteSlug, supabase.auth]);
 
   const handleReviewSubmit = async (
@@ -134,7 +139,10 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
                   Want to share your experience?
                 </p>
                 <p className="text-sm text-blue-700">
-                  <a href="/log-in" className="font-semibold underline">
+                  <a
+                    href={`/log-in?redirect=${pathname}`}
+                    className="font-semibold underline"
+                  >
                     Log in
                   </a>{" "}
                   to leave a review and help other divers.
