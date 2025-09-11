@@ -4,6 +4,7 @@ import "./globals.css";
 import { DevLinkProvider } from "@/devlink/DevLinkProvider";
 import NavbarFixed from "@/app/components/NavbarFixed";
 import { Footer } from "@/devlink/Footer";
+import { AuthProvider } from "@/lib/auth/AuthContext";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -21,13 +22,15 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased dg-body`}>
         <DevLinkProvider>
-          <header>
-            <NavbarFixed />
-          </header>
-          <div className="dg-content">{children}</div>
-          <footer>
-            <Footer />
-          </footer>
+          <AuthProvider>
+            <header>
+              <NavbarFixed />
+            </header>
+            <div className="dg-content">{children}</div>
+            <footer>
+              <Footer />
+            </footer>
+          </AuthProvider>
         </DevLinkProvider>
       </body>
     </html>
