@@ -44,6 +44,16 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
 
     fetchReviews();
 
+    // First, check for an existing session
+    const getSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      setUser(session?.user ?? null);
+    };
+    getSession();
+
+    // Then, listen for any auth state changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
@@ -53,7 +63,7 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [diveSiteSlug, supabase.auth]);
+  }, [diveSiteSlug, supabase]);
 
   const handleReviewSubmit = async (
     rating: number,
