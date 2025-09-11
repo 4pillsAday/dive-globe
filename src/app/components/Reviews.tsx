@@ -32,6 +32,8 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
   const pathname = usePathname();
 
   useEffect(() => {
+    console.log("Reviews.tsx: useEffect triggered.");
+
     const fetchReviews = async () => {
       setLoading(true);
       const res = await fetch(`/api/dives/${diveSiteSlug}/reviews`);
@@ -47,13 +49,17 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("Reviews.tsx: onAuthStateChange fired!", { _event, session });
       setUser(session?.user ?? null);
     });
 
     return () => {
+      console.log("Reviews.tsx: useEffect cleanup. Unsubscribing from auth changes.");
       subscription.unsubscribe();
     };
   }, [diveSiteSlug, supabase]);
+
+  console.log("Reviews.tsx: Rendering component with user state:", user);
 
   const handleReviewSubmit = async (
     rating: number,
