@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Session } from "@supabase/supabase-js";
 import { Navbar } from "@/devlink/Navbar";
-import { supabase } from "@/lib/supabaseClient";
+import supabase from "@/lib/supabaseClient";
 
 function rewriteLinks(root: HTMLElement) {
   // Use relative app routes; Next.js basePath will be applied automatically

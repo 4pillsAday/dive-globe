@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import supabase from "@/lib/supabaseClient";
 import ReviewCard from "./ReviewCard";
 import ReviewForm from "./ReviewForm";
 import { User } from "@supabase/supabase-js";
@@ -28,7 +28,6 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const supabase = createClient();
   const pathname = usePathname();
 
   useEffect(() => {
@@ -53,7 +52,7 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [diveSiteSlug, supabase]);
+  }, [diveSiteSlug]);
 
   const handleReviewSubmit = async (
     rating: number,
