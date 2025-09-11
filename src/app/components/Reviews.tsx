@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/lib/auth/AuthContext";
 import supabase from "@/lib/supabaseClient";
 import ReviewCard from "./ReviewCard";
 import ReviewForm from "./ReviewForm";
-import { User } from "@supabase/supabase-js";
 
 interface Review {
   id: string;
@@ -25,33 +25,24 @@ interface ReviewsProps {
 
 const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { session, isLoading } = useAuth(); // Use session from context
+  const user = session?.user ?? null; // Derive user from session
+  const [loadingReviews, setLoadingReviews] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
     const fetchReviews = async () => {
-      setLoading(true);
+      setLoadingReviews(true);
       const res = await fetch(`/api/dives/${diveSiteSlug}/reviews`);
       if (res.ok) {
         const data = await res.json();
         setReviews(data);
       }
-      setLoading(false);
+      setLoadingReviews(false);
     };
 
     fetchReviews();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
   }, [diveSiteSlug]);
 
   const handleReviewSubmit = async (
@@ -112,7 +103,12 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
           </h2>
         </div>
 
-        {user ? (
+        {isLoading ? (
+          // Show a simple loading state while session is being determined
+          <div className="text-center p-8">
+            <p>Loading...</p>
+          </div>
+        ) : user ? (
           <ReviewForm onSubmit={handleReviewSubmit} isSubmitting={isSubmitting} />
         ) : (
           <div className="bg-blue-50 border-l-4 border-blue-400 p-4 my-6 rounded-r-lg">
@@ -151,7 +147,7 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
           </div>
         )}
 
-        {loading ? (
+        {loadingReviews ? (
           <div className="text-center p-8">
             <p>Loading reviews...</p>
           </div>
