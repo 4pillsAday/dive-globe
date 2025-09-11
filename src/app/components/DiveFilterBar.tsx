@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import type { DiveSiteDetail } from '@/lib/webflow';
 
@@ -39,46 +39,80 @@ export default function DiveFilterBar({ sites, initial }: Props) {
   const country = (sp.get('country') || initial.country || '').toLowerCase();
   const diveType = (sp.get('divetype') || initial.diveType || '').toLowerCase();
 
-  function passes(site: DiveSiteDetail, skip: 'difficulty'|'ocean'|'continent'|'country'|'divetype'|null): boolean {
-    const d = (site.difficulty || '').toLowerCase();
-    const okDiff = skip==='difficulty' ? true : (difficulty ? (d === difficulty || d.startsWith(difficulty)) : true);
-    const okOcean = skip==='ocean' ? true : (ocean ? inferOcean(site.lat, site.lng).toLowerCase() === ocean : true);
-    const okCont = skip==='continent' ? true : (continent ? inferContinent(site.lat, site.lng).toLowerCase() === continent : true);
-    const okCountry = skip==='country' ? true : (country ? (site.country || '').toLowerCase() === country : true);
-    const types = (site.diveTypes || []).map((t)=>t.toLowerCase());
-    const okType = skip==='divetype' ? true : (diveType ? types.includes(diveType) : true);
-    return okDiff && okOcean && okCont && okCountry && okType;
-  }
+  const passes = useCallback(
+    (
+      site: DiveSiteDetail,
+      skip: 'difficulty' | 'ocean' | 'continent' | 'country' | 'divetype' | null
+    ): boolean => {
+      const d = (site.difficulty || '').toLowerCase();
+      const okDiff =
+        skip === 'difficulty'
+          ? true
+          : difficulty
+          ? d === difficulty || d.startsWith(difficulty)
+          : true;
+      const okOcean =
+        skip === 'ocean'
+          ? true
+          : ocean
+          ? inferOcean(site.lat, site.lng).toLowerCase() === ocean
+          : true;
+      const okCont =
+        skip === 'continent'
+          ? true
+          : continent
+          ? inferContinent(site.lat, site.lng).toLowerCase() === continent
+          : true;
+      const okCountry =
+        skip === 'country'
+          ? true
+          : country
+          ? (site.country || '').toLowerCase() === country
+          : true;
+      const types = (site.diveTypes || []).map((t) => t.toLowerCase());
+      const okType =
+        skip === 'divetype' ? true : diveType ? types.includes(diveType) : true;
+      return okDiff && okOcean && okCont && okCountry && okType;
+    },
+    [difficulty, ocean, continent, country, diveType]
+  );
 
   const difficulties = useMemo(() => {
     const set = new Set<string>();
-    for (const s of sites) if (passes(s, 'difficulty') && s.difficulty) set.add(String(s.difficulty));
-    return Array.from(set).sort((a,b)=>String(a).localeCompare(String(b)));
-  }, [sites, ocean, continent, country, diveType, passes]);
+    for (const s of sites)
+      if (passes(s, 'difficulty') && s.difficulty)
+        set.add(String(s.difficulty));
+    return Array.from(set).sort((a, b) => String(a).localeCompare(String(b)));
+  }, [sites, passes]);
 
   const oceans = useMemo(() => {
     const set = new Set<string>();
-    for (const s of sites) if (passes(s, 'ocean')) set.add(inferOcean(s.lat, s.lng));
-    return Array.from(set).sort((a,b)=>a.localeCompare(b));
-  }, [sites, difficulty, continent, country, diveType, passes]);
+    for (const s of sites)
+      if (passes(s, 'ocean')) set.add(inferOcean(s.lat, s.lng));
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [sites, passes]);
 
   const continents = useMemo(() => {
     const set = new Set<string>();
-    for (const s of sites) if (passes(s, 'continent')) set.add(inferContinent(s.lat, s.lng));
-    return Array.from(set).sort((a,b)=>a.localeCompare(b));
-  }, [sites, difficulty, ocean, country, diveType, passes]);
+    for (const s of sites)
+      if (passes(s, 'continent')) set.add(inferContinent(s.lat, s.lng));
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [sites, passes]);
 
   const countries = useMemo(() => {
     const set = new Set<string>();
-    for (const s of sites) if (passes(s, 'country') && s.country) set.add(String(s.country));
-    return Array.from(set).sort((a,b)=>a.localeCompare(b));
-  }, [sites, difficulty, ocean, continent, diveType, passes]);
+    for (const s of sites)
+      if (passes(s, 'country') && s.country) set.add(String(s.country));
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [sites, passes]);
 
   const diveTypes = useMemo(() => {
     const set = new Set<string>();
-    for (const s of sites) if (passes(s, 'divetype') && s.diveTypes) s.diveTypes.forEach((t)=>set.add(String(t)));
-    return Array.from(set).sort((a,b)=>a.localeCompare(b));
-  }, [sites, difficulty, ocean, continent, country, passes]);
+    for (const s of sites)
+      if (passes(s, 'divetype') && s.diveTypes)
+        s.diveTypes.forEach((t) => set.add(String(t)));
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [sites, passes]);
 
   function update(key: string, val: string) {
     const params = new URLSearchParams(sp.toString());

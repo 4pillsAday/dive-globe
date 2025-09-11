@@ -1,10 +1,16 @@
-import Image from 'next/image';
-import { joinBasePath, type DiveSiteDetail, FALLBACK_SITES } from '@/lib/webflow';
-import { headers } from 'next/headers';
-import { findNearestAirport } from '@/lib/airports-lite';
-import FlightLink from '@/app/components/FlightLink';
-import AccommodationLink from '@/app/components/AccommodationLink';
-import GoogleSiteMap from '@/app/components/GoogleSiteMap';
+import { headers } from "next/headers";
+import { notFound } from "next/navigation";
+import Image from "next/image";
+
+import { findNearestAirport } from "@/lib/airports-lite";
+import { DiveSiteDetail, joinBasePath, FALLBACK_SITES } from "@/lib/webflow";
+import Reviews from "@/app/components/Reviews";
+import SiteStats from "@/app/components/SiteStats";
+import GoogleSiteMap from "@/app/components/GoogleSiteMap";
+import FlightLink from "@/app/components/FlightLink";
+import AccommodationLink from "@/app/components/AccommodationLink";
+
+export const revalidate = 3600; // revalidate at most every hour
 
 async function fetchSite(slug: string): Promise<DiveSiteDetail | null> {
   try {
@@ -48,6 +54,7 @@ export default async function DiveDetailPage({ params }: { params: Promise<{ slu
       <div className="dg-hero">
         <div className="dg-hero-text">
           <h1 className="dg-title">{site.name}</h1>
+          <SiteStats diveSiteSlug={slug} />
           {site.country ? <p className="dg-subtitle">{site.country}</p> : null}
         </div>
         {site.imageUrl ? (
@@ -141,10 +148,13 @@ export default async function DiveDetailPage({ params }: { params: Promise<{ slu
           ) : null}
         </div>
       </section>
+
+      <Reviews diveSiteSlug={slug} />
     </main>
   );
 }
 
+// Helper function to slugify country names for URLs
 function slugifyCountry(country: string): string {
   return country
     .toLowerCase()

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import type { GlobeMethods } from 'react-globe.gl';
 import { useRouter } from 'next/navigation';
@@ -174,43 +174,88 @@ export default function GlobeClient() {
   }
 
   // Compute available option sets based on other selected filters
-  function sitePassesFilters(s: DiveSiteDetail, skip: 'country' | 'continent' | 'ocean' | 'difficulty' | 'divetype' | null): boolean {
-    const d = String(s.difficulty || '').toLowerCase();
-    const passDiff = skip === 'difficulty' ? true : (difficultyFilter ? d.startsWith(difficultyFilter) : true);
-    const passCountry = skip === 'country' ? true : (countryFilter ? (s.country || '').toLowerCase() === countryFilter : true);
-    const passCont = skip === 'continent' ? true : (continentFilter ? inferContinent(s.lat, s.lng).toLowerCase() === continentFilter : true);
-    const passOcean = skip === 'ocean' ? true : (oceanFilter ? inferOcean(s.lat, s.lng).toLowerCase() === oceanFilter : true);
-    const passType = skip === 'divetype' ? true : (diveTypeFilter ? (s.diveTypes || []).map((t)=>t.toLowerCase()).includes(diveTypeFilter) : true);
-    return passDiff && passCountry && passCont && passOcean && passType;
-  }
+  const sitePassesFilters = useCallback(
+    (
+      s: DiveSiteDetail,
+      skip: "country" | "continent" | "ocean" | "difficulty" | "divetype" | null
+    ): boolean => {
+      const d = String(s.difficulty || "").toLowerCase();
+      const passDiff =
+        skip === "difficulty"
+          ? true
+          : difficultyFilter
+          ? d.startsWith(difficultyFilter)
+          : true;
+      const passCountry =
+        skip === "country"
+          ? true
+          : countryFilter
+          ? (s.country || "").toLowerCase() === countryFilter
+          : true;
+      const passCont =
+        skip === "continent"
+          ? true
+          : continentFilter
+          ? inferContinent(s.lat, s.lng).toLowerCase() === continentFilter
+          : true;
+      const passOcean =
+        skip === "ocean"
+          ? true
+          : oceanFilter
+          ? inferOcean(s.lat, s.lng).toLowerCase() === oceanFilter
+          : true;
+      const passType =
+        skip === "divetype"
+          ? true
+          : diveTypeFilter
+          ? (s.diveTypes || []).map((t) => t.toLowerCase()).includes(diveTypeFilter)
+          : true;
+      return passDiff && passCountry && passCont && passOcean && passType;
+    },
+    [
+      difficultyFilter,
+      countryFilter,
+      continentFilter,
+      oceanFilter,
+      diveTypeFilter,
+    ]
+  );
 
   const availableCountries = useMemo(() => {
     const set = new Set<string>();
-    for (const s of sites) if (sitePassesFilters(s, 'country') && s.country) set.add(s.country);
+    for (const s of sites)
+      if (sitePassesFilters(s, "country") && s.country) set.add(s.country);
     return Array.from(set).sort((a, b) => a.localeCompare(b));
-  }, [sites, difficultyFilter, continentFilter, oceanFilter]);
+  }, [sites, sitePassesFilters]);
 
   const availableContinents = useMemo(() => {
     const set = new Set<string>();
-    for (const s of sites) if (sitePassesFilters(s, 'continent')) set.add(inferContinent(s.lat, s.lng));
+    for (const s of sites)
+      if (sitePassesFilters(s, "continent"))
+        set.add(inferContinent(s.lat, s.lng));
     return Array.from(set).sort((a, b) => a.localeCompare(b));
-  }, [sites, difficultyFilter, countryFilter, oceanFilter]);
+  }, [sites, sitePassesFilters]);
 
   const availableOceans = useMemo(() => {
     const set = new Set<string>();
-    for (const s of sites) if (sitePassesFilters(s, 'ocean')) set.add(inferOcean(s.lat, s.lng));
+    for (const s of sites)
+      if (sitePassesFilters(s, "ocean")) set.add(inferOcean(s.lat, s.lng));
     return Array.from(set).sort((a, b) => a.localeCompare(b));
-  }, [sites, difficultyFilter, countryFilter, continentFilter]);
+  }, [sites, sitePassesFilters]);
 
-  const filteredSites = useMemo(() => sites.filter((s) => {
-    const d = String(s.difficulty || '').toLowerCase();
-    const passDiff = difficultyFilter ? d.startsWith(difficultyFilter) : true;
-    const passCountry = countryFilter ? (s.country || '').toLowerCase() === countryFilter : true;
-    const passCont = continentFilter ? inferContinent(s.lat, s.lng).toLowerCase() === continentFilter : true;
-    const passOcean = oceanFilter ? inferOcean(s.lat, s.lng).toLowerCase() === oceanFilter : true;
-    const passType = diveTypeFilter ? (s.diveTypes || []).map((t)=>t.toLowerCase()).includes(diveTypeFilter) : true;
-    return passDiff && passCountry && passCont && passOcean && passType;
-  }), [sites, difficultyFilter, countryFilter, continentFilter, oceanFilter, diveTypeFilter]);
+  const filteredSites = useMemo(
+    () =>
+      sites.filter((s) => {
+        const d = String(s.difficulty || '').toLowerCase();
+        const passDiff = difficultyFilter ? d.startsWith(difficultyFilter) : true;
+        const passCountry = countryFilter ? (s.country || '').toLowerCase() === countryFilter : true;
+        const passCont = continentFilter ? inferContinent(s.lat, s.lng).toLowerCase() === continentFilter : true;
+        const passOcean = oceanFilter ? inferOcean(s.lat, s.lng).toLowerCase() === oceanFilter : true;
+        const passType = diveTypeFilter ? (s.diveTypes || []).map((t)=>t.toLowerCase()).includes(diveTypeFilter) : true;
+        return passDiff && passCountry && passCont && passOcean && passType;
+      }),
+    [sites, difficultyFilter, countryFilter, continentFilter, oceanFilter, diveTypeFilter]
+  );
 
   const points = useMemo(() => filteredSites.map(s => ({
     lat: s.lat,
@@ -300,29 +345,44 @@ export default function GlobeClient() {
     return { lat: popupSite.lat, lng: popupSite.lng, element: el };
   }, [popupSite, router]);
 
-  function centroidForCountry(countryLower: string): { lat: number; lng: number } | null {
-    const matches = sites.filter((s) => (s.country || '').toLowerCase() === countryLower);
-    if (!matches.length) return null;
-    const lat = matches.reduce((sum, s) => sum + s.lat, 0) / matches.length;
-    const lng = matches.reduce((sum, s) => sum + s.lng, 0) / matches.length;
-    return { lat, lng };
-  }
+  const centroidForCountry = useCallback(
+    (countryLower: string): { lat: number; lng: number } | null => {
+      const matches = sites.filter(
+        (s) => (s.country || "").toLowerCase() === countryLower
+      );
+      if (!matches.length) return null;
+      const lat = matches.reduce((sum, s) => sum + s.lat, 0) / matches.length;
+      const lng = matches.reduce((sum, s) => sum + s.lng, 0) / matches.length;
+      return { lat, lng };
+    },
+    [sites]
+  );
 
-  function centroidForContinent(contLower: string): { lat: number; lng: number } | null {
-    const matches = sites.filter((s) => inferContinent(s.lat, s.lng).toLowerCase() === contLower);
-    if (!matches.length) return null;
-    const lat = matches.reduce((sum, s) => sum + s.lat, 0) / matches.length;
-    const lng = matches.reduce((sum, s) => sum + s.lng, 0) / matches.length;
-    return { lat, lng };
-  }
+  const centroidForContinent = useCallback(
+    (contLower: string): { lat: number; lng: number } | null => {
+      const matches = sites.filter(
+        (s) => inferContinent(s.lat, s.lng).toLowerCase() === contLower
+      );
+      if (!matches.length) return null;
+      const lat = matches.reduce((sum, s) => sum + s.lat, 0) / matches.length;
+      const lng = matches.reduce((sum, s) => sum + s.lng, 0) / matches.length;
+      return { lat, lng };
+    },
+    [sites]
+  );
 
-  function centroidForOcean(oceanLower: string): { lat: number; lng: number } | null {
-    const matches = sites.filter((s) => inferOcean(s.lat, s.lng).toLowerCase() === oceanLower);
-    if (!matches.length) return null;
-    const lat = matches.reduce((sum, s) => sum + s.lat, 0) / matches.length;
-    const lng = matches.reduce((sum, s) => sum + s.lng, 0) / matches.length;
-    return { lat, lng };
-  }
+  const centroidForOcean = useCallback(
+    (oceanLower: string): { lat: number; lng: number } | null => {
+      const matches = sites.filter(
+        (s) => inferOcean(s.lat, s.lng).toLowerCase() === oceanLower
+      );
+      if (!matches.length) return null;
+      const lat = matches.reduce((sum, s) => sum + s.lat, 0) / matches.length;
+      const lng = matches.reduce((sum, s) => sum + s.lng, 0) / matches.length;
+      return { lat, lng };
+    },
+    [sites]
+  );
 
   // Focus the globe on selection (country > continent > ocean)
   useEffect(() => {
@@ -344,7 +404,15 @@ export default function GlobeClient() {
         globe.pointOfView({ lat: target.lat, lng: target.lng, altitude: 0.9 }, 1200);
       } catch {}
     }
-  }, [countryFilter, continentFilter, oceanFilter, sites]);
+  }, [
+    countryFilter,
+    continentFilter,
+    oceanFilter,
+    sites,
+    centroidForCountry,
+    centroidForContinent,
+    centroidForOcean,
+  ]);
 
   return (
     <>
