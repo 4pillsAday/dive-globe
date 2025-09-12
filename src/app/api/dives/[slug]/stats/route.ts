@@ -1,12 +1,13 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-import { createClient } from "@/lib/supabase/server";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest, { params }) {
-  const supabase = await createClient();
+  const supabase = createRouteHandlerClient({ cookies });
 
   try {
     const { data: diveSite, error: diveSiteError } = await supabase

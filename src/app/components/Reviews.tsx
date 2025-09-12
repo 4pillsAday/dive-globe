@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@/lib/auth/AuthContext";
-import supabase from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabaseClient";
 import ReviewCard from "./ReviewCard";
 import ReviewForm from "./ReviewForm";
+import { User } from "@supabase/supabase-js";
 
 interface Review {
   id: string;
@@ -25,24 +25,33 @@ interface ReviewsProps {
 
 const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
   const [reviews, setReviews] = useState<Review[]>([]);
-  const { session, isLoading } = useAuth(); // Use session from context
-  const user = session?.user ?? null; // Derive user from session
-  const [loadingReviews, setLoadingReviews] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
     const fetchReviews = async () => {
-      setLoadingReviews(true);
+      setLoading(true);
       const res = await fetch(`/api/dives/${diveSiteSlug}/reviews`);
       if (res.ok) {
         const data = await res.json();
         setReviews(data);
       }
-      setLoadingReviews(false);
+      setLoading(false);
     };
 
     fetchReviews();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [diveSiteSlug]);
 
   const handleReviewSubmit = async (
@@ -50,6 +59,9 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
     body: string,
     photos: File[]
   ) => {
+    // Ensure the client exists before trying to use it.
+    if (!supabase) return;
+
     setIsSubmitting(true);
 
     const uploadedPhotos: { storage_path: string }[] = [];
@@ -103,7 +115,7 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
           </h2>
         </div>
 
-        {isLoading ? (
+        {loading ? (
           // Show a simple loading state while session is being determined
           <div className="text-center p-8">
             <p>Loading...</p>
@@ -147,7 +159,7 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
           </div>
         )}
 
-        {loadingReviews ? (
+        {loading ? (
           <div className="text-center p-8">
             <p>Loading reviews...</p>
           </div>
