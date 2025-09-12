@@ -24,6 +24,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const initAuth = async () => {
       console.log('[AuthContext] Starting auth initialization...');
       console.log('[AuthContext] localStorage dg:isAuth:', typeof window !== 'undefined' ? localStorage.getItem('dg:isAuth') : 'N/A');
+      console.log('[AuthContext] All cookies:', document.cookie);
+      console.log('[AuthContext] Location:', window.location.pathname);
       
       // Create a Supabase client that reads from cookies
       const supabase = createBrowserClient(
@@ -32,12 +34,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         {
           cookies: {
             get(name: string) {
-              const cookieValue = document.cookie
-                .split('; ')
-                .find(row => row.startsWith(`${name}=`))
-                ?.split('=')[1];
-              console.log(`[AuthContext] Reading cookie ${name}:`, cookieValue ? 'exists' : 'not found');
-              return cookieValue;
+              // Try to get the main cookie
+              const cookies = document.cookie.split('; ');
+              const mainCookie = cookies.find(row => row.startsWith(`${name}=`));
+              if (mainCookie) {
+                console.log(`[AuthContext] Found cookie ${name}`);
+                return mainCookie.split('=')[1];
+              }
+              
+              // If not found, try to reconstruct from chunks (Supabase sometimes chunks large tokens)
+              const chunks: string[] = [];
+              for (let i = 0; i < 10; i++) {
+                const chunk = cookies.find(row => row.startsWith(`${name}.${i}=`));
+                if (chunk) {
+                  chunks.push(chunk.split('=')[1]);
+                } else {
+                  break;
+                }
+              }
+              
+              if (chunks.length > 0) {
+                console.log(`[AuthContext] Found chunked cookie ${name} with ${chunks.length} chunks`);
+                return chunks.join('');
+              }
+              
+              console.log(`[AuthContext] Cookie ${name} not found`);
+              return undefined;
             },
             // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
             set(name: string, _value: string, _options: any) {
