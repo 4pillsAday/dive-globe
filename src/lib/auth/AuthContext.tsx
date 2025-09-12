@@ -2,7 +2,6 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { Session } from '@supabase/supabase-js';
-import supabase from '@/lib/supabaseClient';
 
 type AuthContextType = {
   session: Session | null;
@@ -19,22 +18,56 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Immediately fetch the session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setIsLoading(false);
+    let subscription: { unsubscribe: () => void } | undefined;
 
-      // Then, set up the listener for future changes
-      const {
-        data: { subscription },
-      } = supabase.auth.onAuthStateChange((_event, session) => {
-        setSession(session);
-      });
+    const initAuth = async () => {
+      // Wait for window.supabase to be available (from Webflow)
+      let retries = 0;
+      const maxRetries = 20; // Wait up to 2 seconds
+      
+      while (!window.supabase && retries < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        retries++;
+      }
 
-      return () => {
+      if (!window.supabase) {
+        console.warn('window.supabase not found, auth may not work properly');
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        // Get the current session from the global Supabase instance
+        const { data: { session: currentSession } } = await window.supabase.auth.getSession();
+        setSession(currentSession);
+        
+        // Set up listener for auth changes
+        const { data: { subscription: authSubscription } } = window.supabase.auth.onAuthStateChange((_event, session) => {
+          setSession(session);
+          
+          // Sync with localStorage to match Webflow's auth state
+          if (session) {
+            localStorage.setItem('dg:isAuth', '1');
+          } else {
+            localStorage.setItem('dg:isAuth', '0');
+          }
+        });
+        
+        subscription = authSubscription;
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initAuth();
+
+    return () => {
+      if (subscription) {
         subscription.unsubscribe();
-      };
-    });
+      }
+    };
   }, []);
 
   return (

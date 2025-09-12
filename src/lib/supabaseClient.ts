@@ -1,8 +1,21 @@
 import { createBrowserClient } from '@supabase/ssr';
+import { SupabaseClient } from '@supabase/supabase-js';
 
-const supabase = createBrowserClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+// Create a singleton that uses window.supabase if available (from Webflow),
+// otherwise creates its own instance for local development
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let supabase: SupabaseClient<any, any, any>;
+
+if (typeof window !== 'undefined' && window.supabase) {
+  // Use the global Supabase instance from Webflow
+  supabase = window.supabase;
+} else {
+  // Create our own instance for local development or when not in Webflow context
+  supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ) as SupabaseClient<any, any, any>;
+}
 
 export default supabase;
