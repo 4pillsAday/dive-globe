@@ -39,6 +39,12 @@ export default function NavbarFixed() {
   const router = useRouter();
   const { session } = useAuth(); // Use the session from the context
 
+  console.log('[NavbarFixed] Component rendered:', {
+    hasSession: !!session,
+    sessionUser: session?.user?.email,
+    localStorage: typeof window !== 'undefined' ? localStorage.getItem('dg:isAuth') : 'N/A'
+  });
+
   function applyAuthVisibility(root: HTMLElement, isLoggedIn: boolean) {
     // Prefer robust selectors that don't rely on CSS module classnames
     const loginLinks = root.querySelectorAll<HTMLAnchorElement>(

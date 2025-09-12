@@ -30,6 +30,14 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const pathname = usePathname();
 
+  console.log('[Reviews] Component rendered:', {
+    isLoading,
+    hasSession: !!session,
+    hasUser: !!user,
+    userEmail: user?.email,
+    pathname
+  });
+
   useEffect(() => {
     const fetchReviews = async () => {
       setLoadingReviews(true);
