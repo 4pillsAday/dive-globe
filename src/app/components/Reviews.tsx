@@ -38,10 +38,6 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
       const res = await fetch(`/app/api/dives/${diveSiteSlug}/reviews`);
       if (res.ok) {
         const data = await res.json();
-        console.log("[Reviews] Fetched data:", JSON.stringify(data, null, 2));
-        data.forEach((review: Review) => {
-          console.log(`[Reviews] Review ${review.id} author:`, JSON.stringify(review.author, null, 2));
-        });
         setReviews(data);
       } else {
         console.error("[Reviews] Failed to fetch reviews:", res.status, res.statusText);
@@ -87,8 +83,6 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
 
     if (res.ok) {
       const newReview = await res.json();
-      console.log("[Reviews] Received new review from API:", JSON.stringify(newReview, null, 2));
-      console.log("[Reviews] New review author:", JSON.stringify(newReview.author, null, 2));
       const newReviewWithPhotos = {
         ...newReview,
         review_photos: uploadedPhotos,
