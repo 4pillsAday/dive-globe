@@ -22,9 +22,9 @@ export async function middleware(request: NextRequest) {
             name,
             value,
             ...options,
-            // Ensure cookies work across the domain
-            domain: '.thediveglobe.com',
-            sameSite: 'lax',
+            // Let Supabase handle the domain/path settings
+            path: options.path || '/',
+            sameSite: 'lax' as const,
             secure: true,
           })
         },
@@ -34,7 +34,7 @@ export async function middleware(request: NextRequest) {
             value: '',
             ...options,
             maxAge: 0,
-            domain: '.thediveglobe.com',
+            path: options.path || '/',
           })
         },
       },
