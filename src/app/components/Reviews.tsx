@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth/AuthContext";
-import supabase from "@/lib/supabaseClient";
 import ReviewCard from "./ReviewCard";
 import ReviewForm from "./ReviewForm";
 
@@ -54,10 +53,10 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
 
     const uploadedPhotos: { storage_path: string }[] = [];
 
-    if (photos.length > 0) {
+    if (photos.length > 0 && window.supabase) {
       for (const photo of photos) {
         const fileName = `${user!.id}/${Date.now()}-${photo.name}`;
-        const { data, error } = await supabase.storage
+        const { data, error } = await window.supabase.storage
           .from("review-photos")
           .upload(fileName, photo);
 
@@ -135,7 +134,7 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
                 </p>
                 <p className="text-sm text-blue-700">
                   <a
-                    href={`/log-in?redirect=/app${pathname}`}
+                    href={`/log-in?redirect=${pathname}`}
                     className="font-semibold underline"
                   >
                     Log in
