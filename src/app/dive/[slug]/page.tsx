@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import { notFound } from "next/navigation";
 import Image from "next/image";
 
 import { findNearestAirport } from "@/lib/airports-lite";
