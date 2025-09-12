@@ -37,7 +37,10 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
       const res = await fetch(`/app/api/dives/${diveSiteSlug}/reviews`);
       if (res.ok) {
         const data = await res.json();
+        console.log("[Reviews Component] Fetched reviews from API:", JSON.stringify(data, null, 2));
         setReviews(data);
+      } else {
+        console.error("[Reviews Component] Failed to fetch reviews:", res.status, res.statusText);
       }
       setLoadingReviews(false);
     };
@@ -50,6 +53,8 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
     body: string,
     photos: File[]
   ) => {
+    console.log("[handleReviewSubmit] Current user:", JSON.stringify(user, null, 2));
+    console.log("[handleReviewSubmit] Starting review submission:", { rating, body, photoCount: photos.length });
     setIsSubmitting(true);
 
     const uploadedPhotos: { storage_path: string }[] = [];
@@ -78,6 +83,8 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
 
     if (res.ok) {
       const newReview = await res.json();
+      console.log("[handleReviewSubmit] Received new review from API:", JSON.stringify(newReview, null, 2));
+      console.log("[handleReviewSubmit] Current user in res ok:", JSON.stringify(user, null, 2));
       const newReviewWithAuthor = {
         ...newReview,
         review_photos: uploadedPhotos, // Add photos for immediate display
@@ -87,10 +94,12 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
           email: user?.email || "",
         },
       };
+      console.log("[handleReviewSubmit] Optimistically adding review to UI:", JSON.stringify(newReviewWithAuthor, null, 2));
 
       setReviews([newReviewWithAuthor, ...reviews]);
     } else {
-      console.error("Failed to submit review");
+      console.error("[handleReviewSubmit] Failed to submit review:", res.status, res.statusText);
+      console.error("Response body:", await res.text());
     }
     setIsSubmitting(false);
   };
