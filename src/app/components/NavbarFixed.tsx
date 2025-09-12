@@ -54,7 +54,7 @@ export default function NavbarFixed() {
     
     try {
       // Call our logout API to clear server-side session
-      await fetch('/api/auth/logout', {
+      await fetch('/app/api/auth/logout', {
         method: 'POST',
         credentials: 'include',
       });
