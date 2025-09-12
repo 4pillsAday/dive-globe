@@ -106,7 +106,7 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
     <div className="bg-white antialiased">
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg font-bold">
+          <h2 className="text-lg font-bold text-black">
             Site Reviews
           </h2>
         </div>
