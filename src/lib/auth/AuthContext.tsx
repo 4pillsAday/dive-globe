@@ -21,6 +21,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     let subscription: { unsubscribe: () => void } | undefined;
 
     const initAuth = async () => {
+      console.log('[AuthContext] Starting auth initialization...');
+      console.log('[AuthContext] window.supabase exists:', !!window.supabase);
+      console.log('[AuthContext] localStorage dg:isAuth:', typeof window !== 'undefined' ? localStorage.getItem('dg:isAuth') : 'N/A');
+      
       // Wait for window.supabase to be available (from Webflow)
       let retries = 0;
       const maxRetries = 20; // Wait up to 2 seconds
@@ -30,19 +34,37 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         retries++;
       }
 
+      console.log('[AuthContext] After waiting, window.supabase exists:', !!window.supabase);
+      console.log('[AuthContext] Waited for', retries * 100, 'ms');
+
       if (!window.supabase) {
-        console.warn('window.supabase not found, auth may not work properly');
+        console.warn('[AuthContext] window.supabase not found after waiting, auth may not work properly');
         setIsLoading(false);
         return;
       }
 
       try {
         // Get the current session from the global Supabase instance
-        const { data: { session: currentSession } } = await window.supabase.auth.getSession();
+        console.log('[AuthContext] Getting session from window.supabase...');
+        const { data: { session: currentSession }, error } = await window.supabase.auth.getSession();
+        
+        console.log('[AuthContext] Session result:', {
+          hasSession: !!currentSession,
+          sessionUser: currentSession?.user?.email,
+          error: error
+        });
+        
         setSession(currentSession);
         
         // Set up listener for auth changes
-        const { data: { subscription: authSubscription } } = window.supabase.auth.onAuthStateChange((_event, session) => {
+        console.log('[AuthContext] Setting up auth state change listener...');
+        const { data: { subscription: authSubscription } } = window.supabase.auth.onAuthStateChange((event, session) => {
+          console.log('[AuthContext] Auth state changed:', {
+            event,
+            hasSession: !!session,
+            sessionUser: session?.user?.email
+          });
+          
           setSession(session);
           
           // Sync with localStorage to match Webflow's auth state
@@ -55,9 +77,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         
         subscription = authSubscription;
       } catch (error) {
-        console.error('Error initializing auth:', error);
+        console.error('[AuthContext] Error initializing auth:', error);
       } finally {
         setIsLoading(false);
+        console.log('[AuthContext] Auth initialization complete');
       }
     };
 
