@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { DevLinkProvider } from "@/devlink/DevLinkProvider";
-import NavbarFixed from "@/app/components/NavbarFixed";
+import NavbarOverride from "@/app/components/NavbarOverride";
 import { Footer } from "@/devlink/Footer";
 import { AuthProvider } from "@/lib/auth/AuthContext";
 
@@ -24,7 +24,7 @@ export default function RootLayout({
         <DevLinkProvider>
           <AuthProvider>
             <header>
-              <NavbarFixed />
+              <NavbarOverride />
             </header>
             <div className="dg-content">{children}</div>
             <footer>
