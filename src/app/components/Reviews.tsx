@@ -13,6 +13,7 @@ interface Review {
   created_at: string;
   review_photos: { storage_path: string }[];
   author: {
+    id: string;
     display_name: string;
     avatar_url: string;
     email: string;
@@ -83,20 +84,12 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
 
     if (res.ok) {
       const newReview = await res.json();
-      console.log("[handleReviewSubmit] Received new review from API:", JSON.stringify(newReview, null, 2));
-      console.log("[handleReviewSubmit] Current user in res ok:", JSON.stringify(user, null, 2));
-      const newReviewWithAuthor = {
+      const newReviewWithPhotos = {
         ...newReview,
-        review_photos: uploadedPhotos, // Add photos for immediate display
-        author: {
-          display_name: user?.user_metadata.display_name || "You",
-          avatar_url: user?.user_metadata.avatar_url || "",
-          email: user?.email || "",
-        },
+        review_photos: uploadedPhotos,
       };
-      console.log("[handleReviewSubmit] Optimistically adding review to UI:", JSON.stringify(newReviewWithAuthor, null, 2));
 
-      setReviews([newReviewWithAuthor, ...reviews]);
+      setReviews([newReviewWithPhotos, ...reviews]);
     } else {
       console.error("[handleReviewSubmit] Failed to submit review:", res.status, res.statusText);
       console.error("Response body:", await res.text());
