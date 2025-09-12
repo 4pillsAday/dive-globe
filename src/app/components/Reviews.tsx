@@ -41,7 +41,7 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
   useEffect(() => {
     const fetchReviews = async () => {
       setLoadingReviews(true);
-      const res = await fetch(`/api/dives/${diveSiteSlug}/reviews`);
+      const res = await fetch(`/app/api/dives/${diveSiteSlug}/reviews`);
       if (res.ok) {
         const data = await res.json();
         setReviews(data);
@@ -77,7 +77,7 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
       }
     }
 
-    const res = await fetch(`/api/dives/${diveSiteSlug}/reviews`, {
+    const res = await fetch(`/app/api/dives/${diveSiteSlug}/reviews`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ rating, body, photos: uploadedPhotos }),

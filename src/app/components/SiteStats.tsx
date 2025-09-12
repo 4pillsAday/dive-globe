@@ -17,7 +17,7 @@ const SiteStats = ({ diveSiteSlug }: SiteStatsProps) => {
   useEffect(() => {
     const fetchStats = async () => {
       setLoading(true);
-      const res = await fetch(`/api/dives/${diveSiteSlug}/stats`);
+      const res = await fetch(`/app/api/dives/${diveSiteSlug}/stats`);
       if (res.ok) {
         const data = await res.json();
         setStats(data);
