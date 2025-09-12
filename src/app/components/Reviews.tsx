@@ -31,14 +31,6 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const pathname = usePathname();
 
-  console.log('[Reviews] Component rendered:', {
-    isLoading,
-    hasSession: !!session,
-    hasUser: !!user,
-    userEmail: user?.email,
-    pathname
-  });
-
   useEffect(() => {
     const fetchReviews = async () => {
       setLoadingReviews(true);
@@ -92,6 +84,7 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
         author: {
           display_name: user?.user_metadata.display_name || "You",
           avatar_url: user?.user_metadata.avatar_url || "",
+          email: user?.email || "",
         },
       };
 
