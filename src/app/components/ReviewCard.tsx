@@ -11,13 +11,15 @@ interface ReviewCardProps {
     author: {
       display_name: string;
       avatar_url: string;
+      email: string;
     } | null;
   };
 }
 
 const ReviewCard = ({ review }: ReviewCardProps) => {
   const { rating, body, created_at, author, review_photos } = review;
-  const authorName = author?.display_name || "Anonymous";
+  const authorName =
+    author?.display_name || author?.email?.split("@")[0] || "Anonymous";
   const authorAvatar = author?.avatar_url;
 
   const getPublicUrl = (storagePath: string) => {
