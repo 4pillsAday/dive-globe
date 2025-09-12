@@ -142,7 +142,7 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
                 </p>
                 <p className="text-sm text-blue-700">
                   <a
-                    href={`/log-in?redirect=${pathname}`}
+                    href={`/log-in?redirect=/app${pathname}`}
                     className="font-semibold underline"
                   >
                     Log in

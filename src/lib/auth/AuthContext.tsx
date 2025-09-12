@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { Session } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 
 type AuthContextType = {
   session: Session | null;
@@ -22,31 +23,40 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const initAuth = async () => {
       console.log('[AuthContext] Starting auth initialization...');
-      console.log('[AuthContext] window.supabase exists:', !!window.supabase);
       console.log('[AuthContext] localStorage dg:isAuth:', typeof window !== 'undefined' ? localStorage.getItem('dg:isAuth') : 'N/A');
       
-      // Wait for window.supabase to be available (from Webflow)
-      let retries = 0;
-      const maxRetries = 20; // Wait up to 2 seconds
-      
-      while (!window.supabase && retries < maxRetries) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-        retries++;
-      }
-
-      console.log('[AuthContext] After waiting, window.supabase exists:', !!window.supabase);
-      console.log('[AuthContext] Waited for', retries * 100, 'ms');
-
-      if (!window.supabase) {
-        console.warn('[AuthContext] window.supabase not found after waiting, auth may not work properly');
-        setIsLoading(false);
-        return;
-      }
+      // Create a Supabase client that reads from cookies
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+          cookies: {
+            get(name: string) {
+              const cookieValue = document.cookie
+                .split('; ')
+                .find(row => row.startsWith(`${name}=`))
+                ?.split('=')[1];
+              console.log(`[AuthContext] Reading cookie ${name}:`, cookieValue ? 'exists' : 'not found');
+              return cookieValue;
+            },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+            set(name: string, _value: string, _options: any) {
+              console.log(`[AuthContext] Setting cookie ${name}`);
+              // Let Supabase handle cookie setting
+            },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+            remove(name: string, _options: any) {
+              console.log(`[AuthContext] Removing cookie ${name}`);
+              // Let Supabase handle cookie removal
+            },
+          },
+        }
+      );
 
       try {
-        // Get the current session from the global Supabase instance
-        console.log('[AuthContext] Getting session from window.supabase...');
-        const { data: { session: currentSession }, error } = await window.supabase.auth.getSession();
+        // Get the current session from cookies
+        console.log('[AuthContext] Getting session from cookies...');
+        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
         
         console.log('[AuthContext] Session result:', {
           hasSession: !!currentSession,
@@ -58,7 +68,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         
         // Set up listener for auth changes
         console.log('[AuthContext] Setting up auth state change listener...');
-        const { data: { subscription: authSubscription } } = window.supabase.auth.onAuthStateChange((event, session) => {
+        const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((event, session) => {
           console.log('[AuthContext] Auth state changed:', {
             event,
             hasSession: !!session,
@@ -76,6 +86,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
         
         subscription = authSubscription;
+        
+        // Also store the client for global access if needed
+        if (typeof window !== 'undefined') {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (window as any).nextSupabase = supabase;
+        }
       } catch (error) {
         console.error('[AuthContext] Error initializing auth:', error);
       } finally {
