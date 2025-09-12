@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Navbar } from "@/devlink/Navbar";
 import { useAuth } from "@/lib/auth/AuthContext";
+import { clearAllAuthData } from "@/lib/auth/logout";
 
 function rewriteLinks(root: HTMLElement) {
   // Use relative app routes; Next.js basePath will be applied automatically
@@ -45,6 +46,29 @@ export default function NavbarFixed() {
     localStorage: typeof window !== 'undefined' ? localStorage.getItem('dg:isAuth') : 'N/A'
   });
 
+  const handleLogout = useCallback(async () => {
+    console.log('[NavbarFixed] Starting logout...');
+    
+    // Clear all client-side auth data
+    clearAllAuthData();
+    
+    try {
+      // Call our logout API to clear server-side session
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch (error) {
+      console.error('[NavbarFixed] Error calling logout API:', error);
+    }
+    
+    // Small delay to ensure cookies are cleared
+    setTimeout(() => {
+      // Redirect to Webflow home page
+      window.location.href = 'https://www.thediveglobe.com/';
+    }, 100);
+  }, []);
+
   function applyAuthVisibility(root: HTMLElement, isLoggedIn: boolean) {
     // Prefer robust selectors that don't rely on CSS module classnames
     const loginLinks = root.querySelectorAll<HTMLAnchorElement>(
@@ -84,6 +108,16 @@ export default function NavbarFixed() {
     function onClick(e: Event) {
       const t = e.target as HTMLElement | null;
       if (!t) return;
+      
+      // Check if it's a logout button/link
+      const logoutElement = t.closest('[data-auth="signout"], a[href="/logout"], button:has(.logout)');
+      if (logoutElement) {
+        e.preventDefault();
+        e.stopPropagation();
+        handleLogout();
+        return;
+      }
+      
       const a = t.closest("a") as HTMLAnchorElement | null;
       if (!a) return;
       const href = a.getAttribute("href") || "";
@@ -107,7 +141,7 @@ export default function NavbarFixed() {
       mo.disconnect();
       el.removeEventListener("click", onClick);
     };
-  }, [router, session]); // Add session to the dependency array
+  }, [router, session, handleLogout]); // Add session and handleLogout to the dependency array
 
   useEffect(() => {
     if (ref.current) applyAuthVisibility(ref.current, !!session);
