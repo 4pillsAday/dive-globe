@@ -17,6 +17,7 @@ interface ReviewCardProps {
 }
 
 const ReviewCard = ({ review }: ReviewCardProps) => {
+  console.log("[ReviewCard] Rendering with review prop:", JSON.stringify(review, null, 2));
   const { rating, body, created_at, author, review_photos } = review;
   const authorName =
     author?.display_name || author?.email?.split("@")[0] || "Anonymous";

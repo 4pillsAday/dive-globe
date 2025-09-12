@@ -43,7 +43,16 @@ export async function GET(req: NextRequest, { params }) {
       .eq("site_id", diveSite.id)
       .order("created_at", { ascending: false });
 
+    console.log(
+      "[API Reviews GET] Supabase response:",
+      {
+        reviews: reviews ? JSON.stringify(reviews, null, 2) : null,
+        reviewsError: reviewsError ? JSON.stringify(reviewsError, null, 2) : null,
+      }
+    );
+
     if (reviewsError) {
+      console.error("[API Reviews GET] Supabase query failed:", reviewsError);
       throw reviewsError;
     }
 
