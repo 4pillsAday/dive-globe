@@ -264,7 +264,7 @@ export const FALLBACK_SITES: DiveSiteDetail[] = [
     description: 'Two spectacular reefs with dramatic walls and prolific fish life.',
   },
   {
-    id: 'dahab-blue-hole',
+    id: '163c3274-e8eb-4984-9a9e-68a7119b9b04',
     slug: 'blue-hole-dahab',
     name: 'Blue Hole (Dahab)',
     lat: 28.572,
