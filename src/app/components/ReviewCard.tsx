@@ -18,10 +18,8 @@ interface ReviewCardProps {
 
 const ReviewCard = ({ review }: ReviewCardProps) => {
   const { rating, body, created_at, author, review_photos } = review;
-  console.log(`[ReviewCard] Processing author for review ${review.id}:`, JSON.stringify(author, null, 2));
   const authorName =
     author?.display_name || author?.email?.split("@")[0] || "Anonymous";
-  console.log(`[ReviewCard] Determined authorName for review ${review.id}:`, authorName);
   const authorAvatar = author?.avatar_url;
 
   const getPublicUrl = (storagePath: string) => {

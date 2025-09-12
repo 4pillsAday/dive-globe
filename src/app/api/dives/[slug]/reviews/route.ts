@@ -44,14 +44,11 @@ export async function GET(req: NextRequest, { params }) {
       .order("created_at", { ascending: false });
 
     if (reviewsError) {
-      console.error("[API Reviews GET] Supabase query error:", JSON.stringify(reviewsError, null, 2));
       throw reviewsError;
     }
 
-    console.log("[API Reviews GET] Fetched reviews with author data:", JSON.stringify(reviews, null, 2));
     return NextResponse.json(reviews);
   } catch (error) {
-    console.error("[API Reviews GET] An unexpected error occurred:", error);
     return NextResponse.json(
       { message: "Error fetching reviews", error },
       { status: 500 }
@@ -117,11 +114,9 @@ export async function POST(req: NextRequest, { params }) {
       .single();
 
     if (reviewError) {
-      console.error("[API Reviews POST] Supabase insert error:", JSON.stringify(reviewError, null, 2));
       throw reviewError;
     }
 
-    console.log("[API Reviews POST] Successfully created review with author data:", JSON.stringify(review, null, 2));
     if (photos && photos.length > 0) {
       const photoRecords = photos.map((photo: { storage_path: string }) => ({
         review_id: review.id,
@@ -141,7 +136,6 @@ export async function POST(req: NextRequest, { params }) {
 
     return NextResponse.json(review, { status: 201 });
   } catch (error) {
-    console.error("[API Reviews POST] An unexpected error occurred:", error);
     return NextResponse.json(
       { message: "Error creating review", error },
       { status: 500 }
