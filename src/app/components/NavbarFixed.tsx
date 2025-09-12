@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Session } from "@supabase/supabase-js";
 import { Navbar } from "@/devlink/Navbar";
-import { useAuth } from "@/lib/auth/AuthContext";
+import { supabase } from "@/lib/supabaseClient";
 
 function rewriteLinks(root: HTMLElement) {
   // Use relative app routes; Next.js basePath will be applied automatically
@@ -37,7 +38,7 @@ function rewriteLinks(root: HTMLElement) {
 export default function NavbarFixed() {
   const ref = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
-  const { session } = useAuth(); // Use the session from the context
+  const sessionRef = useRef<Session | null>(null);
 
   function applyAuthVisibility(root: HTMLElement, isLoggedIn: boolean) {
     // Prefer robust selectors that don't rely on CSS module classnames
@@ -62,13 +63,13 @@ export default function NavbarFixed() {
     // The DevLink component can reset links back to their Webflow defaults.
     // We need to rewrite them on initial mount and whenever the component updates itself.
     rewriteLinks(el);
-    applyAuthVisibility(el, !!session);
+    applyAuthVisibility(el, !!sessionRef.current);
 
     const mo = new MutationObserver(() => {
       // Temporarily disconnect the observer to prevent an infinite loop from our own changes.
       mo.disconnect();
       rewriteLinks(el);
-      applyAuthVisibility(el, !!session);
+      applyAuthVisibility(el, !!sessionRef.current);
       // Reconnect the observer to watch for future changes from the DevLink component.
       mo.observe(el, { subtree: true, childList: true, attributes: true });
     });
@@ -101,7 +102,27 @@ export default function NavbarFixed() {
       mo.disconnect();
       el.removeEventListener("click", onClick);
     };
-  }, [router, session]); // Add session to the dependency array
+  }, [router]);
+
+  const [session, setSession] = useState<Session | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      sessionRef.current = session;
+      if (ref.current) applyAuthVisibility(ref.current, !!session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      sessionRef.current = session;
+      if (ref.current) applyAuthVisibility(ref.current, !!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (ref.current) applyAuthVisibility(ref.current, !!session);
