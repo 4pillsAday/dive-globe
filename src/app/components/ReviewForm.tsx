@@ -69,7 +69,7 @@ const ReviewForm = ({ onSubmit, isSubmitting }: ReviewFormProps) => {
           id="comment"
           rows={6}
           className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none"
-          placeholder="Write a review..."
+          placeholder="Share your dive experience! When did you dive? What marine life did you encounter, and how was the water temp? Which dive shop guided your adventure?"
           value={body}
           onChange={handleTextChange}
           required

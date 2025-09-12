@@ -35,7 +35,8 @@ export async function GET(req: NextRequest, { params }) {
         ),
         author:users (
           display_name,
-          avatar_url
+          avatar_url,
+          email
         )
       `
       )
