@@ -91,13 +91,13 @@ body.dg-body { margin: 0; background-size: 200% 200%; animation: dg-gradient-mov
 .dg-hero-text { padding: 8px 0; }
 .dg-hero-img { border-radius: 12px; border: 1px solid var(--surface-contrast); object-fit: cover; width: 100%; height: auto; box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
 .dg-hero-fallback { height: 220px; background: radial-gradient(circle at 30% 30%, rgba(126,250,255,0.18), transparent 60%); border-radius: 12px; border: 1px solid var(--surface-contrast); }
-.dg-section { margin-top: 18px; }
-.dg-specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 10px; }
+.dg-section { margin: 24px 0; }
+.dg-specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 10px; }
 .dg-spec-label { color: #b7dcff; font-size: 12px; display: block; }
 .dg-desc-large { color: #eaf6ff; line-height: 1.6; }
 
-.dg-mini-map { margin: 18px 0; }
-.dg-iframe { width: 100%; height: 320px; border: 1px solid #17304f; border-radius: 10px; }
+.dg-mini-map { margin: 18px 0; border-radius: 12px; overflow: hidden; }
+.dg-iframe { width: 100%; height: 360px; border: 0; border-radius: 12px; }
 
 /* Detail page actions */
 .dg-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }

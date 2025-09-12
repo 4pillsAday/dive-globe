@@ -33,7 +33,7 @@ export async function GET(req: NextRequest, { params }) {
         review_photos (
           storage_path
         ),
-        author:users (
+        author:author_id (
           display_name,
           avatar_url,
           email

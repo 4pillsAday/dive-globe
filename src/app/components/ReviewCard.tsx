@@ -30,7 +30,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
   };
 
   return (
-    <article className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
+    <article className="p-6 bg-white rounded-xl border border-gray-200 shadow-sm">
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center">
           <div className="flex-shrink-0 mr-3">
