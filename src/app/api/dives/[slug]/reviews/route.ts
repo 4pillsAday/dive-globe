@@ -129,10 +129,19 @@ export async function POST(req: NextRequest, { params }) {
 
     const { rating, body, photos, parentReviewId } = await req.json();
 
-    // For replies, rating is optional (defaults to 0)
-    if ((!rating && !parentReviewId) || !body) {
+    // Validation:
+    // - For top-level reviews: rating (1-5) and body are required
+    // - For replies: only body is required (rating defaults to 0)
+    if (!body) {
       return NextResponse.json(
-        { message: parentReviewId ? "Body is required" : "Rating and body are required" },
+        { message: "Body is required" },
+        { status: 400 }
+      );
+    }
+    
+    if (!parentReviewId && (!rating || rating < 1 || rating > 5)) {
+      return NextResponse.json(
+        { message: "Rating between 1-5 is required for reviews" },
         { status: 400 }
       );
     }

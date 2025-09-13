@@ -64,14 +64,6 @@ const ReviewCard = ({ review, onReply, onReact, isNested = false }: ReviewCardPr
   };
 
   const handleReaction = async (newReaction: 'like' | 'dislike') => {
-    console.log('handleReaction called with:', newReaction);
-    console.log('onReact defined?', !!onReact);
-    console.log('user defined?', !!user);
-    console.log('user email:', user?.email);
-    console.log('author email:', author?.email);
-    console.log('isOwnReview?', isOwnReview);
-    console.log('Button should be disabled?', !user || isOwnReview);
-    
     if (!onReact) {
       console.error('onReact is not defined');
       return;
@@ -188,16 +180,7 @@ const ReviewCard = ({ review, onReply, onReact, isNested = false }: ReviewCardPr
             {/* Like button */}
             <button
               type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                console.log('Like button clicked');
-                console.log('Button disabled?', !user || isOwnReview);
-                console.log('User:', user);
-                console.log('isOwnReview:', isOwnReview);
-                if (!(!user || isOwnReview)) {
-                  handleReaction('like');
-                }
-              }}
+              onClick={() => handleReaction('like')}
               disabled={!user || isOwnReview}
               title={!user ? 'Please log in to react' : isOwnReview ? 'Cannot react to your own review' : 'Like this review'}
               className={`flex items-center space-x-1 text-sm ${
@@ -217,10 +200,7 @@ const ReviewCard = ({ review, onReply, onReact, isNested = false }: ReviewCardPr
             {/* Dislike button */}
             <button
               type="button"
-              onClick={() => {
-                console.log('Dislike button clicked');
-                handleReaction('dislike');
-              }}
+              onClick={() => handleReaction('dislike')}
               disabled={!user || isOwnReview}
               title={!user ? 'Please log in to react' : isOwnReview ? 'Cannot react to your own review' : 'Dislike this review'}
               className={`flex items-center space-x-1 text-sm ${
