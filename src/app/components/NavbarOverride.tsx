@@ -35,7 +35,7 @@ function rewriteLinks(root: HTMLElement) {
   });
 }
 
-export default function NavbarFixed() {
+export default function NavbarOverride() {
   const ref = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
   const { session } = useAuth(); // Use the session from the context
