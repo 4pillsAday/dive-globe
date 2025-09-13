@@ -64,6 +64,11 @@ const ReviewCard = ({ review, onReply, onReact, isNested = false }: ReviewCardPr
   };
 
   const handleReaction = async (newReaction: 'like' | 'dislike') => {
+    console.log('handleReaction called with:', newReaction);
+    console.log('onReact defined?', !!onReact);
+    console.log('user defined?', !!user);
+    console.log('isOwnReview?', isOwnReview);
+    
     if (!onReact) {
       console.error('onReact is not defined');
       return;
@@ -179,7 +184,11 @@ const ReviewCard = ({ review, onReply, onReact, isNested = false }: ReviewCardPr
           <div className="flex items-center space-x-4">
             {/* Like button */}
             <button
-              onClick={() => handleReaction('like')}
+              type="button"
+              onClick={() => {
+                console.log('Like button clicked');
+                handleReaction('like');
+              }}
               disabled={!user || isOwnReview}
               title={!user ? 'Please log in to react' : isOwnReview ? 'Cannot react to your own review' : 'Like this review'}
               className={`flex items-center space-x-1 text-sm ${
@@ -198,7 +207,11 @@ const ReviewCard = ({ review, onReply, onReact, isNested = false }: ReviewCardPr
 
             {/* Dislike button */}
             <button
-              onClick={() => handleReaction('dislike')}
+              type="button"
+              onClick={() => {
+                console.log('Dislike button clicked');
+                handleReaction('dislike');
+              }}
               disabled={!user || isOwnReview}
               title={!user ? 'Please log in to react' : isOwnReview ? 'Cannot react to your own review' : 'Dislike this review'}
               className={`flex items-center space-x-1 text-sm ${
