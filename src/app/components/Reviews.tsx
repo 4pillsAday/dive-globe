@@ -80,36 +80,48 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
       }
     }
 
-    const res = await fetch(`/app/api/dives/${diveSiteSlug}/reviews`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ rating, body, photos: uploadedPhotos, parentReviewId }),
-    });
+    console.log('[handleReviewSubmit] Submitting:', { rating, body, parentReviewId });
 
-    if (res.ok) {
-      const newReview = await res.json();
-      const newReviewWithPhotos = {
-        ...newReview,
-        review_photos: uploadedPhotos,
-      };
+    try {
+      const res = await fetch(`/app/api/dives/${diveSiteSlug}/reviews`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rating, body, photos: uploadedPhotos, parentReviewId }),
+      });
 
-      if (parentReviewId) {
-        // Add reply to the parent review
-        setReviews(reviews.map(review => {
-          if (review.id === parentReviewId) {
-            return {
-              ...review,
-              replies: [...(review.replies || []), newReviewWithPhotos]
-            };
-          }
-          return review;
-        }));
+      const responseData = await res.json();
+      console.log('[handleReviewSubmit] Response:', res.status, responseData);
+
+      if (res.ok) {
+        const newReviewWithPhotos = {
+          ...responseData,
+          review_photos: uploadedPhotos,
+        };
+
+        if (parentReviewId) {
+          // Add reply to the parent review
+          setReviews(reviews.map(review => {
+            if (review.id === parentReviewId) {
+              return {
+                ...review,
+                replies: [...(review.replies || []), newReviewWithPhotos]
+              };
+            }
+            return review;
+          }));
+        } else {
+          // Add new top-level review
+          setReviews([newReviewWithPhotos, ...reviews]);
+        }
+        
+        // Stats will be updated via database trigger
       } else {
-        // Add new top-level review
-        setReviews([newReviewWithPhotos, ...reviews]);
+        console.error("[handleReviewSubmit] Error:", responseData);
+        alert(`Failed to submit: ${responseData.message || 'Unknown error'}\n\nDetails: ${JSON.stringify(responseData.error || {})}`);
       }
-    } else {
-      console.error("Failed to submit review:", res.status, res.statusText);
+    } catch (error) {
+      console.error("[handleReviewSubmit] Caught error:", error);
+      alert('Failed to submit. Please check the console for details.');
     }
     setIsSubmitting(false);
   };
