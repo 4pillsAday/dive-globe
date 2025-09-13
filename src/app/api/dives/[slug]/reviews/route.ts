@@ -137,6 +137,20 @@ export async function POST(req: NextRequest, { params }) {
       );
     }
 
+    // First, get the dive site
+    const { data: diveSite, error: diveSiteError } = await supabase
+      .from("dive_sites")
+      .select("id")
+      .eq("slug", params.slug)
+      .single();
+
+    if (diveSiteError) {
+      return NextResponse.json(
+        { message: "Dive site not found", error: diveSiteError },
+        { status: 404 }
+      );
+    }
+
     // Validate parent review if provided
     if (parentReviewId) {
       const { data: parentReview, error: parentError } = await supabase
@@ -167,19 +181,6 @@ export async function POST(req: NextRequest, { params }) {
           { status: 400 }
         );
       }
-    }
-
-    const { data: diveSite, error: diveSiteError } = await supabase
-      .from("dive_sites")
-      .select("id")
-      .eq("slug", params.slug)
-      .single();
-
-    if (diveSiteError) {
-      return NextResponse.json(
-        { message: "Dive site not found", error: diveSiteError },
-        { status: 404 }
-      );
     }
 
     const reviewData = {
