@@ -127,9 +127,10 @@ export async function POST(req: NextRequest, { params }) {
 
     const { rating, body, photos, parentReviewId } = await req.json();
 
-    if (!rating || !body) {
+    // For replies, rating is optional (defaults to 0)
+    if ((!rating && !parentReviewId) || !body) {
       return NextResponse.json(
-        { message: "Rating and body are required" },
+        { message: parentReviewId ? "Body is required" : "Rating and body are required" },
         { status: 400 }
       );
     }

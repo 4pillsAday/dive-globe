@@ -61,7 +61,7 @@ const ReplyForm = ({ parentReviewId, onSubmit, onCancel, isSubmitting }: ReplyFo
               value={body}
               onChange={(e) => setBody(e.target.value)}
               placeholder="Write a reply..."
-              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 resize-none"
+              className="w-full px-3 py-2 text-sm text-gray-900 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 resize-none placeholder-gray-500"
               rows={2}
               disabled={isSubmitting}
               required
