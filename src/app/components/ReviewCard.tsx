@@ -64,7 +64,14 @@ const ReviewCard = ({ review, onReply, onReact, isNested = false }: ReviewCardPr
   };
 
   const handleReaction = async (newReaction: 'like' | 'dislike') => {
-    if (!onReact || !user) return;
+    if (!onReact) {
+      console.error('onReact is not defined');
+      return;
+    }
+    if (!user) {
+      console.error('User is not logged in');
+      return;
+    }
     
     // If clicking the same reaction, remove it
     const reactionToSend = user_reaction === newReaction ? null : newReaction;
@@ -174,6 +181,7 @@ const ReviewCard = ({ review, onReply, onReact, isNested = false }: ReviewCardPr
             <button
               onClick={() => handleReaction('like')}
               disabled={!user || isOwnReview}
+              title={!user ? 'Please log in to react' : isOwnReview ? 'Cannot react to your own review' : 'Like this review'}
               className={`flex items-center space-x-1 text-sm ${
                 user_reaction === 'like' 
                   ? 'text-blue-600' 
@@ -192,6 +200,7 @@ const ReviewCard = ({ review, onReply, onReact, isNested = false }: ReviewCardPr
             <button
               onClick={() => handleReaction('dislike')}
               disabled={!user || isOwnReview}
+              title={!user ? 'Please log in to react' : isOwnReview ? 'Cannot react to your own review' : 'Dislike this review'}
               className={`flex items-center space-x-1 text-sm ${
                 user_reaction === 'dislike' 
                   ? 'text-red-600' 
