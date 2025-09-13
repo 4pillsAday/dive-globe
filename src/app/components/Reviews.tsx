@@ -6,18 +6,25 @@ import { useAuth } from "@/lib/auth/AuthContext";
 import ReviewCard from "./ReviewCard";
 import ReviewForm from "./ReviewForm";
 
+interface Author {
+  display_name: string;
+  avatar_url: string;
+  email: string;
+}
+
 interface Review {
   id: string;
   rating: number;
   body: string;
   created_at: string;
+  parent_review_id?: string | null;
+  thread_depth?: number;
+  like_count?: number;
+  dislike_count?: number;
+  user_reaction?: 'like' | 'dislike' | null;
   review_photos: { storage_path: string }[];
-  author: {
-    id: string;
-    display_name: string;
-    avatar_url: string;
-    email: string;
-  } | null;
+  author: Author | null;
+  replies?: Review[];
 }
 
 interface ReviewsProps {
@@ -51,10 +58,9 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
   const handleReviewSubmit = async (
     rating: number,
     body: string,
-    photos: File[]
+    photos: File[],
+    parentReviewId?: string
   ) => {
-    console.log("[handleReviewSubmit] Current user:", JSON.stringify(user, null, 2));
-    console.log("[handleReviewSubmit] Starting review submission:", { rating, body, photoCount: photos.length });
     setIsSubmitting(true);
 
     const uploadedPhotos: { storage_path: string }[] = [];
@@ -68,7 +74,6 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
 
         if (error) {
           console.error("Error uploading photo:", error);
-          // continue to next photo
           continue;
         }
         uploadedPhotos.push({ storage_path: data.path });
@@ -78,7 +83,7 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
     const res = await fetch(`/app/api/dives/${diveSiteSlug}/reviews`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ rating, body, photos: uploadedPhotos }),
+      body: JSON.stringify({ rating, body, photos: uploadedPhotos, parentReviewId }),
     });
 
     if (res.ok) {
@@ -88,12 +93,84 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
         review_photos: uploadedPhotos,
       };
 
-      setReviews([newReviewWithPhotos, ...reviews]);
+      if (parentReviewId) {
+        // Add reply to the parent review
+        setReviews(reviews.map(review => {
+          if (review.id === parentReviewId) {
+            return {
+              ...review,
+              replies: [...(review.replies || []), newReviewWithPhotos]
+            };
+          }
+          return review;
+        }));
+      } else {
+        // Add new top-level review
+        setReviews([newReviewWithPhotos, ...reviews]);
+      }
     } else {
-      console.error("[handleReviewSubmit] Failed to submit review:", res.status, res.statusText);
-      console.error("Response body:", await res.text());
+      console.error("Failed to submit review:", res.status, res.statusText);
     }
     setIsSubmitting(false);
+  };
+
+  const handleReply = async (body: string, parentReviewId: string) => {
+    // For replies, we use rating=0 as they don't have ratings
+    await handleReviewSubmit(0, body, [], parentReviewId);
+  };
+
+  const handleReaction = async (reviewId: string, reaction: 'like' | 'dislike' | null) => {
+    if (!user) return;
+
+    const url = `/app/api/dives/${diveSiteSlug}/reviews/${reviewId}/react`;
+    
+    try {
+      let res;
+      if (reaction === null) {
+        // Remove reaction
+        res = await fetch(url, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        });
+      } else {
+        // Add or update reaction
+        res = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reaction }),
+        });
+      }
+
+      if (res.ok) {
+        const { counts } = await res.json();
+        
+        // Update the review with new reaction counts
+        const updateReviewReaction = (reviews: Review[]): Review[] => {
+          return reviews.map(review => {
+            if (review.id === reviewId) {
+              return {
+                ...review,
+                user_reaction: reaction,
+                like_count: counts.like_count,
+                dislike_count: counts.dislike_count,
+              };
+            }
+            // Also check nested replies
+            if (review.replies) {
+              return {
+                ...review,
+                replies: updateReviewReaction(review.replies)
+              };
+            }
+            return review;
+          });
+        };
+
+        setReviews(updateReviewReaction(reviews));
+      }
+    } catch (error) {
+      console.error("Error updating reaction:", error);
+    }
   };
 
   return (
@@ -156,7 +233,12 @@ const Reviews = ({ diveSiteSlug }: ReviewsProps) => {
         ) : reviews.length > 0 ? (
           <div className="mt-8 space-y-6">
             {reviews.map((review) => (
-              <ReviewCard key={review.id} review={review} />
+              <ReviewCard 
+                key={review.id} 
+                review={review} 
+                onReply={handleReply}
+                onReact={handleReaction}
+              />
             ))}
           </div>
         ) : (
