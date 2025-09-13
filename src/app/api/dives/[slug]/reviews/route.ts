@@ -124,6 +124,8 @@ export async function POST(req: NextRequest, { params }) {
     if (!user) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
+    
+    console.log("[POST Review] User:", user.id, user.email);
 
     const { rating, body, photos, parentReviewId } = await req.json();
 
@@ -180,17 +182,19 @@ export async function POST(req: NextRequest, { params }) {
       );
     }
 
+    const reviewData = {
+      site_id: diveSite.id,
+      author_id: user.id,
+      rating: rating || 0,
+      body,
+      parent_review_id: parentReviewId || null,
+    };
+
+    console.log("[POST Review] Inserting review:", JSON.stringify(reviewData, null, 2));
+
     const { data: review, error: reviewError } = await supabase
       .from("reviews")
-      .insert([
-        {
-          site_id: diveSite.id,
-          author_id: user.id,
-          rating,
-          body,
-          parent_review_id: parentReviewId || null,
-        },
-      ])
+      .insert([reviewData])
       .select(`
         id,
         rating,
@@ -209,6 +213,7 @@ export async function POST(req: NextRequest, { params }) {
       .single();
 
     if (reviewError) {
+      console.error("[POST Review] Insert error:", reviewError);
       throw reviewError;
     }
 
@@ -238,8 +243,22 @@ export async function POST(req: NextRequest, { params }) {
 
     return NextResponse.json(reviewWithReaction, { status: 201 });
   } catch (error) {
+    console.error("[POST Review] Caught error:", error);
+    
+    // Provide more detailed error information
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const errorDetails = {
+      message: errorMessage,
+      code: (error as { code?: string })?.code,
+      details: (error as { details?: string })?.details,
+      hint: (error as { hint?: string })?.hint
+    };
+    
     return NextResponse.json(
-      { message: "Error creating review", error },
+      { 
+        message: "Error creating review", 
+        error: errorDetails 
+      },
       { status: 500 }
     );
   }
